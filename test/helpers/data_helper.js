@@ -16,7 +16,7 @@ const config = {
 }
 
 console.log('')
-console.log('********', {config})
+console.log('********', JSON.stringify(config))
 console.log('')
 
 function getApi() {

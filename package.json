@@ -1,5 +1,5 @@
 {
-  "name": "@dadi/publish-test",
+  "name": "@dadi/publish-functional-tests",
   "version": "1.0.0",
   "description": "Test Suite for Publish",
   "main": "index.js",

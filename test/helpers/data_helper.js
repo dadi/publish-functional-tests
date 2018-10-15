@@ -15,10 +15,6 @@ const config = {
   }
 }
 
-console.log('')
-console.log('********', JSON.stringify(config).toUpperCase())
-console.log('')
-
 function getApi() {
   return new DADIAPI({
     uri: config.api.protocol + '://' + config.api.host,

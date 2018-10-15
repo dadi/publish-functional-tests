@@ -15,6 +15,10 @@ const config = {
   }
 }
 
+console.log('')
+console.log('********', {config})
+console.log('')
+
 function getApi() {
   return new DADIAPI({
     uri: config.api.protocol + '://' + config.api.host,

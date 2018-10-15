@@ -16,7 +16,7 @@ const config = {
 }
 
 console.log('')
-console.log('********', JSON.stringify(config))
+console.log('********', JSON.stringify(config).toUpperCase())
 console.log('')
 
 function getApi() {

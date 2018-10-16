@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/codeceptjs run --steps",
-    "test-parallel": "./node_modules/.bin/codeceptjs run-multiple parallel --steps --plugins allure"
+    "test-parallel": "./node_modules/.bin/codeceptjs run-multiple parallel --steps"
   },
   "author": "",
   "license": "ISC",

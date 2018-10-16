@@ -29,21 +29,30 @@ module.exports = {
     numberOfArticles: (locate('.//strong[1]').as('Number Of Articles On Page')),
     totalArticles: (locate('.//strong[2]').as('Number Of Articles On Page')),
     signOutButton: (locate('button').withText('Sign out').as('Sign Out Button')),
-    titleField: (locate('#c-2').as('Title Field')),
+    titleField: (locate('div').withAttr({
+      'data-field-name': 'title'
+    }).find('input').as('Title Field')),
     selectAuthor: (locate('a').withText('Select existing author').as('Select Author Button')),
     checkAuthor: (locate('td').withText('Dave Macpherson').as('Select The Author')),
     addAuthor: (locate('button').withText('Add selected document').as('Add The Author')),
-    excerptField: (locate('#c-4').as('Excerpt Field')),
-    bodyField: (locate('.//div[1]/div/div[2]').as('Body Field')),
+    excerptField: (locate('div').withAttr({
+      'data-field-name': 'excerpt'
+    }).find('textarea').as('Excerpt Field')),
+    bodyField: (locate('div').withAttr({
+    'contenteditable': 'true'
+    }).as('Body Field')),
     metaTab: (locate('a').withText('Meta').as('Meta Tab')),
-    metaTitle: (locate('#c-121').as('Meta Title')),
+    metaTitle: (locate('div').withAttr({
+      'data-field-name': 'metaTitle'
+    }).find('input').as('Meta Title Field')),
     saveMenu: (locate('.//div[3]/div/div/button[2]').as('Save Menu')),
     saveGoBack: (locate('button').withText('Save and go back').as('Save And Go Back Button')),
     saveArticle: (locate('button').withText('Save and continue').as('Save And Continue Button')),
     createdArticle: (locate('a').withText('This Is A New Article').as('New Article')),
     updatedArticle: (locate('a').withText('This Article Is Updated').as('Updated Article')),
-    slugField: (locate('#c-6').as('Slugified Field')),
-    slugFieldUpdated: (locate('#c-24').as('Updated Slugified Field')),
+    slugField: (locate('div').withAttr({
+      'data-field-name': 'slug'
+    }).find('input').as('Slugified Field')),
     checkArticle: (locate('td').withText('This is the excerpt').as('Select Article')),
     applyButton: (locate('button').withText('Apply').as('Apply Button')),
     selectDelete: (locate('.//select').as('Select Delete')),
@@ -57,7 +66,9 @@ module.exports = {
     checkSubCategory: (locate('td').withText('Network').as('Network Row')),
     checkWebService: (locate('td').withText('RESTful API').as('API Row')),
     checkNetworkService: (locate('td').withText('processing power').as('Host Row')),
-    removeButton: (locate('.//*[@id="c-120"]/button').withText('Remove').as('Remove Button')),
+    removeButton: (locate('div').withAttr({
+      'data-field-name': 'network-service'
+    }).find('button').as('Remove Network Service Button')),
     networkService: (locate('label').withText('Network service')),
     authorPage: (locate('a').withText('4').as('Page 4'))
   },
@@ -182,7 +193,7 @@ module.exports = {
     I.see('This Article Is Updated')
     I.click(this.locators.updatedArticle)
     I.seeInCurrentUrl(id)
-    let updatedSlug = await I.grabValueFrom(this.locators.slugFieldUpdated)
+    let updatedSlug = await I.grabValueFrom(this.locators.slugField)
     I.seeStringsAreEqual(updatedSlug, 'this-article-is-updated')
     // pause()
   },

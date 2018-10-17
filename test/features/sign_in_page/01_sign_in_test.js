@@ -18,8 +18,8 @@ Scenario('Unauthenticated Page Load', async (loginPage) => {
 
 // DataTable to test different combinations of sign in fields
 let passwords = new DataTable(['username', 'password'])
-passwords.add(['testuser1', 'a_test_user@somedomain.tech'])
-passwords.add(['testuser2', 'a_test_user@somedomain.com'])
+passwords.add(['syst_on', '123456'])
+passwords.add(['syst_one', '12345'])
 
 Data(passwords).Scenario('Invalid Credentials - Screen Error', (current, loginPage) => {
   loginPage.validateInvalidCredentials(current.username, current.password)

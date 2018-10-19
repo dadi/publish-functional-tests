@@ -14,9 +14,9 @@ module.exports = {
     idField: (locate('#c-2').withAttr({
       readonly: 'true'
     }).as('Username Field')),
-    currentPasswordField: (locate('.//div[2]/div/label[1]')),
-    newPasswordField: (locate('.//div[2]/div/label[2]')),
-    confirmNewPasswordField: (locate('.//div[2]/div/label[3]')),
+    currentPasswordField: (locate('.//div[2]/div/label[1]').as('Current Password Field')),
+    newPasswordField: (locate('.//div[2]/div/label[2]').as('New Password Field')),
+    confirmNewPasswordField: (locate('.//div[2]/div/label[3]').as('Confirm New Password Field')),
     firstNameField: (locate('#c-6').as('First Name Field')),
     lastNameField: (locate('#c-7').as('Last Name Field')),
     saveSettings: (locate('button').withText('Save settings').as('Save Settings Button')),
@@ -26,10 +26,13 @@ module.exports = {
     articleLink: (locate('a').withAttr({
       href: '/articles'
     }).as('Article Link')),
-    tryPassword: (locate('input').withAttr({ type: 'password' }).at(1))
+    tryPassword: (locate('input').withAttr({ type: 'password' }).at(1)),
+    accountMenuOpen: (locate('span').withText('Open').as('Account Menu Open')),
+    accountMenuClose: (locate('span').withText('Close').as('Account Menu Close'))
   },
 
   async changePersonalDetails(first, last) {
+    I.click(this.locators.accountMenuOpen)
     I.click(this.locators.profileLink)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/profile')
@@ -44,55 +47,62 @@ module.exports = {
     I.click(this.locators.personalDetailsLink)
     I.seeInCurrentUrl('/profile/personal-details')
     I.see('First name')
-    I.fillField(this.locators.firstNameField, first)
+    await I.fillField(this.locators.firstNameField, first)
     I.see('Last name')
-    I.fillField(this.locators.lastNameField, '')
-    I.fillField(this.locators.lastNameField, last)
+    await I.fillField(this.locators.lastNameField, '')
+    await I.fillField(this.locators.lastNameField, last)
     I.click(this.locators.saveSettings)
     I.waitForText('Your profile has been updated', 2)
     I.waitForFunction(() => document.readyState === 'complete')
     I.wait(4)
-    I.waitForText(`${first} ${last}`)
+    I.click(this.locators.accountMenuOpen)
+    I.see(`${first} ${last}`)
+    I.click(this.locators.accountMenuClose)
   },
 
   async invalidCurrentPassword(currentPassword, newPassword, confirmNewPassword) {
-    I.click(this.locators.profileLink)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/profile')
-    I.fillField(this.locators.currentPasswordField, currentPassword)
-    I.fillField(this.locators.newPasswordField, newPassword)
-    I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
+    await I.fillField(this.locators.currentPasswordField, currentPassword)
+    await I.fillField(this.locators.newPasswordField, newPassword)
+    await I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
     I.click(this.locators.saveSettings)
     I.waitForFunction(() => document.readyState === 'complete')
     I.waitForText('This password is incorrect')
     I.dontSee('Your profile has been updated')
     I.seeElement(this.locators.saveSetttingsDisabled)
+    await I.refreshPage()
   },
 
   async newPasswordsNoMatch(currentPassword, newPassword, confirmNewPassword) {
-    I.click(this.locators.profileLink)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/profile')
-    I.fillField(this.locators.currentPasswordField, currentPassword)
-    I.fillField(this.locators.newPasswordField, newPassword)
-    I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
+    await I.fillField(this.locators.currentPasswordField, currentPassword)
+    await I.fillField(this.locators.newPasswordField, newPassword)
+    await I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
     I.see('The passwords must match')
     I.seeElement(this.locators.saveSetttingsDisabled)
+    await I.refreshPage()
   },
 
   async successfulPasswordChange(currentPassword, newPassword, confirmNewPassword) {
-    I.click(this.locators.profileLink)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/profile')
-    I.fillField(this.locators.currentPasswordField, currentPassword)
-    I.fillField(this.locators.newPasswordField, newPassword)
-    I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
+    await I.fillField(this.locators.currentPasswordField, currentPassword)
+    await I.fillField(this.locators.newPasswordField, newPassword)
+    await I.fillField(this.locators.confirmNewPasswordField, confirmNewPassword)
     I.click(this.locators.saveSettings)
     // I.waitForFunction(() => document.readyState === 'complete')
     I.waitForText('Your profile has been updated')
     I.wait(4)
     // I.click(this.locators.articleLink)
     // I.waitForFunction(() => document.readyState === 'complete')
+    I.click(this.locators.accountMenuOpen)
     I.retry(3).click(this.locators.signOutButton)
+  },
+
+  async gotoProfilePage() {
+    I.click(this.locators.accountMenuOpen)
+    I.click(this.locators.profileLink)
   }
 }

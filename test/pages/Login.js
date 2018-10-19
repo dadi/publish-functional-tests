@@ -26,10 +26,11 @@ module.exports = {
     articleLink: (locate('a').withAttr({
       href: '/articles'
     })),
-    signOutButton: (locate('button').withText('Sign out').as('Sign Out Button'))
+    signOutButton: (locate('button').withText('Sign out').as('Sign Out Button')),
+    accountMenuOpen: (locate('span').withText('Open').as('Account Menu Open'))
   },
 
-  validateSignInPage() {
+  async validateSignInPage() {
     I.amOnPage('/')
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/sign-in')
@@ -78,6 +79,7 @@ module.exports = {
   },
 
   async validateSignOut() {
+    I.click(this.locators.accountMenuOpen)
     I.retry(3).click(this.locators.signOutButton)
     I.waitForText('Password')
     I.seeInCurrentUrl('/sign-in')
@@ -86,15 +88,15 @@ module.exports = {
     I.seeElement(this.locators.signInButton)
   },
 
-  addUser(id, secret) {
-    I.createClient(id, secret)
+  async addUser(id, secret) {
+    await I.createClient(id, secret)
   },
 
-  deleteUser(id) {
-    I.deleteClient(id)
+  async deleteUser(id) {
+    await I.deleteClient(id)
   },
 
-  gotoHomePage() {
-    I.click(this.locators.publishMenu)
+  async gotoHomePage() {
+    await I.click(this.locators.accountMenuOpen)
   }
 }

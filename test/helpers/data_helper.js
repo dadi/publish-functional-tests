@@ -30,7 +30,7 @@ function getApi() {
 
 class Data extends Helper {
   //create test client
-  createClient(id, secret) {
+  async createClient(id, secret) {
 
     let client = {
       clientId: id,
@@ -39,7 +39,7 @@ class Data extends Helper {
 
     let api = getApi()
 
-    api
+    await api
       .inClients()
       .create(client)
       .then(doc => {
@@ -59,17 +59,17 @@ class Data extends Helper {
       })
   }
 
-  deleteClient(id) {
+  async deleteClient(id) {
     let api = getApi()
 
-    api
+    await api
       .inClients()
       .whereClientIs(id)
       .delete()
       .then(() => {
         // console.log('Deleted ' + id)
       }).catch(err => {
-        console.log('! Error:', err)
+        // console.log('! Error:', err)
       })
   }
 
@@ -192,7 +192,7 @@ class Data extends Helper {
     })
   }
 
-  makeRequest(options, postData) {
+  async makeRequest(options, postData) {
     // console.log('options :', options)
     // console.log('postData :', postData)
 

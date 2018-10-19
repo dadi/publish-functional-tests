@@ -1,29 +1,21 @@
 Feature('Articles Page - @smoke')
 
-// BeforeSuite((I, loginPage) => {
-//     loginPage.addUser('buzz', 'lightyear')
-// })
-
-// AfterSuite((I, loginPage) => {
-//     loginPage.removeVerifyTokens('syst_one@gmail.com')
-//     // loginPage.removeClientStoreEntry('syst_one@gmail.com')
-//     loginPage.removeUserFromDB('syst_one@gmail.com')
-// })
-
-BeforeSuite((loginPage) => {
-  loginPage.addUser('syst_two', '123456')
+BeforeSuite(async (articlePage, loginPage) => {
+  // await articlePage.deleteDocument('This is a new article')
+  await loginPage.deleteUser('syst_two')
+  await loginPage.addUser('syst_two', '123456')
 })
 
-AfterSuite((loginPage) => {
-  loginPage.deleteUser('syst_two')
+AfterSuite(async (loginPage) => {
+  await loginPage.deleteUser('syst_two')
 })
 
-Before((loginPage) => {
-  loginPage.validateSignInPage()
+Before(async (loginPage) => {
+  await loginPage.validateSignInPage()
 })
 
-After((loginPage) => {
-  loginPage.validateSignOut()
+After(async (loginPage) => {
+  await loginPage.validateSignOut()
 })
 
 Scenario('Create Article', async (articlePage, homePage, loginPage) => {

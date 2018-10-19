@@ -81,7 +81,7 @@ module.exports = {
     // console.log(articles)
     await I.seeNumberOfVisibleElements(this.locators.articleRows, articles)
     let range = await I.grabTextFrom(this.locators.numberOfArticles)
-    let number = range.substring(2, 4)
+    let number = range.substring(2, 4).trim()
     // console.log(number)
     await I.seeNumbersAreEqual(articles.toString(), number)
   },
@@ -212,5 +212,9 @@ module.exports = {
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
     // console.log(newTotal)
     I.seeTotalHasDecreased(newTotal, total)
+  },
+
+  async deleteDocument(title) {
+    await I.deleteDoc(title)
   }
 }

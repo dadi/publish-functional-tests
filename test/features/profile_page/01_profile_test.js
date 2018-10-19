@@ -1,19 +1,20 @@
 Feature('Profile Page - @smoke')
 
-BeforeSuite((loginPage) => {
-  loginPage.addUser('syst_three', '123456')
+BeforeSuite( async (loginPage) => {
+  await loginPage.deleteUser('syst_three')
+  await loginPage.addUser('syst_three', '123456')
 })
 
-AfterSuite((loginPage) => {
-  loginPage.deleteUser('syst_three')
+AfterSuite( async (loginPage) => {
+  await loginPage.deleteUser('syst_three')
 })
 
-Before((I, loginPage) => {
-  loginPage.validateSignInPage()
+Before(async (loginPage) => {
+  await loginPage.validateSignInPage()
 })
 
-After((I, loginPage) => {
-  loginPage.validateSignOut()
+After(async (loginPage) => {
+  await loginPage.validateSignOut()
 })
 
 Scenario('Change Personal Details', async (I, loginPage, profilePage) => {

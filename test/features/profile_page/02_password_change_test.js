@@ -1,20 +1,21 @@
 Feature('Profile Page Password Change - @smoke')
 
-BeforeSuite((loginPage) => {
-  // loginPage.deleteUser('syst_four')
-  loginPage.addUser('syst_four', '123456')
-  loginPage.validateSignInPage()
-  loginPage.validateSignIn('syst_four', '123456')
+BeforeSuite(async (loginPage, profilePage) => {
+  await loginPage.deleteUser('syst_four')
+  await loginPage.addUser('syst_four', '123456')
+  await loginPage.validateSignInPage()
+  await loginPage.validateSignIn('syst_four', '123456')
+  await profilePage.gotoProfilePage()
 })
 
-AfterSuite((loginPage) => {
-  loginPage.validateSignOut()
-  loginPage.deleteUser('syst_four')
+AfterSuite(async (loginPage) => {
+  await loginPage.validateSignOut()
+  await loginPage.deleteUser('syst_four')
 })
 
-Before((loginPage) => {
+Before(async (loginPage) => {
   // loginPage.validateSignInPage()
-  loginPage.gotoHomePage()
+  // await loginPage.gotoHomePage()
 })
 
 After((loginPage) => {

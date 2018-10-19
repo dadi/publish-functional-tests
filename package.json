@@ -4,8 +4,8 @@
   "description": "Test Suite for Publish",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/codeceptjs run --steps --override \"{ \\\"helpers\\\": {\\\"Puppeteer\\\": {\\\"url\\\": \\\"$PUBLISH_URL\\\"}}}\"",
-    "test-parallel": "./node_modules/.bin/codeceptjs run-multiple parallel --steps"
+    "test": "./node_modules/.bin/codeceptjs run --debug --override \"{ \\\"helpers\\\": {\\\"Puppeteer\\\": {\\\"url\\\": \\\"$PUBLISH_URL\\\"}}}\"",
+    "test-parallel": "./node_modules/.bin/codeceptjs run-multiple parallel --debug"
   },
   "author": "",
   "license": "ISC",

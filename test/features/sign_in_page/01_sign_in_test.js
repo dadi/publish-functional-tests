@@ -1,15 +1,16 @@
 Feature('Sign In Page - @smoke')
 
-BeforeSuite((loginPage) => {
-  loginPage.addUser('syst_one', '123456')
+BeforeSuite(async (loginPage) => {
+  await loginPage.deleteUser('syst_one')
+  await loginPage.addUser('syst_one', '123456')
 })
 
-AfterSuite((loginPage) => {
-  loginPage.deleteUser('syst_one')
+AfterSuite(async (loginPage) => {
+  await loginPage.deleteUser('syst_one')
 })
 
-Before((loginPage) => {
-  loginPage.validateSignInPage()
+Before(async (loginPage) => {
+  await loginPage.validateSignInPage()
 })
 
 Scenario('Unauthenticated Page Load', async (loginPage) => {

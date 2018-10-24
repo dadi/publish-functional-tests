@@ -215,6 +215,7 @@ module.exports = {
   },
 
   async deleteDocument(title) {
-    await I.deleteDoc(title)
+    await I.deleteArticleByTitle(title)
   }
+
 }

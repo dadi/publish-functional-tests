@@ -24,7 +24,7 @@ function getApi() {
       secret: config.api.credentials.secret
     },
     version: '1.0',
-    database: 'dadicloud'
+    database: 'cloud'
   })
 }
 
@@ -72,6 +72,32 @@ class Data extends Helper {
         // console.log('! Error:', err)
       })
   }
+
+  async deleteArticleByTitle(title) {
+    let api = getApi()
+
+    await api
+      .in('articles')
+      .whereFieldIsEqualTo('title', title)
+      .delete()
+      .then(() => {
+        // console.log('Deleted ' + title)
+      }).catch(err => {
+        console.log('! Error:', err)
+      })
+    }
+    // return getApi()
+    //   .in('articles')
+    //   .whereFieldIsEqualTo('title', title)
+    //   .find({
+    //     'extractResults': true
+    //   })
+    //   .then(function (doc) {
+    //       console.log('New document:', doc)
+    //     })
+    //     .catch(function (err) {
+    //       console.log('! Error:', err)
+    //     })
 
   getToken() {
     let postData = JSON.stringify(config.api.credentials)

@@ -1,7 +1,8 @@
 Feature('Articles Page - @smoke')
 
 BeforeSuite(async (articlePage, loginPage) => {
-  // await articlePage.deleteDocument('This is a new article')
+  await articlePage.deleteDocument('This Is A New Article')
+  await articlePage.deleteDocument('This Article Is Updated')
   await loginPage.deleteUser('syst_two')
   await loginPage.addUser('syst_two', '123456')
 })

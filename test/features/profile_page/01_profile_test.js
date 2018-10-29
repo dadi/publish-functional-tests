@@ -1,23 +1,22 @@
 Feature('Profile Page - @smoke')
 
-BeforeSuite( async (loginPage) => {
+BeforeSuite(async (loginPage) => {
   await loginPage.deleteUser('syst_three')
   await loginPage.addUser('syst_three', '123456')
+  await loginPage.createSession('syst_three', '123456', '/profile')
 })
 
-AfterSuite( async (loginPage) => {
+AfterSuite(async (I, loginPage) => {
+  await I.clearCookie('accessToken')
   await loginPage.deleteUser('syst_three')
 })
 
 Before(async (loginPage) => {
-  await loginPage.validateSignInPage()
 })
 
 After(async (loginPage) => {
-  await loginPage.validateSignOut()
 })
 
 Scenario('Change Personal Details', async (I, loginPage, profilePage) => {
-  await loginPage.validateSignIn('syst_three', '123456')
   await profilePage.changePersonalDetails('First', 'Last')
 })

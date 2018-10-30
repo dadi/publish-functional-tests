@@ -85,22 +85,33 @@ class Data extends Helper {
       }).catch(err => {
         console.log('! Error:', err)
       })
-    }
-    // return getApi()
-    //   .in('articles')
-    //   .whereFieldIsEqualTo('title', title)
-    //   .find({
-    //     'extractResults': true
-    //   })
-    //   .then(function (doc) {
-    //       console.log('New document:', doc)
-    //     })
-    //     .catch(function (err) {
-    //       console.log('! Error:', err)
-    //     })
+  }
 
   getToken() {
     let postData = JSON.stringify(config.api.credentials)
+    // console.log("THIS" + postData)
+
+    let options = {
+      hostname: config.api.host,
+      port: config.api.port,
+      path: `/token`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    return this.makeRequest(options, postData)
+  }
+
+  async getSessionToken(id, secret) {
+    // let postData = JSON.stringify(config.api.credentials)
+    let postData = JSON.stringify({
+      clientId: id,
+      secret: secret
+    })
+
+    // console.log("SESSION" + postData)
 
     let options = {
       hostname: config.api.host,
@@ -236,8 +247,6 @@ class Data extends Helper {
         })
 
         res.on('end', () => {
-          // console.log('No more data in response.')
-
           return resolve(data)
         })
       })

@@ -63,17 +63,10 @@ module.exports = {
     I.waitForFunction(() => document.readyState === 'complete')
     I.resizeWindow(1200, 650)
     I.waitForText('Welcome,')
-    // pause() You can use the menu to navigate collections and start editing documents.
-    // I.wait(5)
-    // I.see('Dave Mac')
-    // await I.click(this.locators.publishMenu)
-    // pause()
     I.waitForVisible(this.locators.navigationMenu, 4)
     I.see('Content')
     I.see('Taxonomy')
-    // I.see('Publish authors')
     I.see('Articles')
-    // pause()
     I.see('Network services')
     I.see('Web services')
   },
@@ -90,6 +83,16 @@ module.exports = {
 
   async addUser(id, secret) {
     await I.createClient(id, secret)
+  },
+
+  async createSession(id, secret, url) {
+    let data = await I.getSessionToken(id, secret)
+    let x = JSON.parse(data)
+    let token = x.accessToken
+    // console.log(token)
+    await I.amOnPage(url)
+    await I.setCookie({name: 'accessToken', value: token})
+    await I.resizeWindow(1200, 650)
   },
 
   async deleteUser(id) {

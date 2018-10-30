@@ -74,6 +74,7 @@ module.exports = {
   },
 
   async validateArticlePage() {
+    await I.amOnPage('/articles')
     await I.waitForVisible(this.locators.articleTitleHeading)
     await I.waitForElement(this.locators.footer)
     await I.seeElement(this.locators.createNewButton)
@@ -95,7 +96,6 @@ module.exports = {
     I.fillField(this.locators.titleField, 'This Is A New Article')
     I.fillField(this.locators.excerptField, 'This is the excerpt')
     I.fillField(this.locators.bodyField, 'This is the body of the new article')
-    // I.click(this.locators.saveMenu)
     I.click(this.locators.saveArticle)
     I.waitForText('The document has been created')
     I.wait(3)
@@ -104,7 +104,6 @@ module.exports = {
     I.seeInCurrentUrl('/select/author')
     I.waitForText('Team')
     I.wait(1)
-    // pause()
     I.click(this.locators.authorPage)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author/4')
@@ -184,8 +183,6 @@ module.exports = {
     I.seeStringsAreEqual(slug, 'this-is-a-new-article')
     I.fillField(this.locators.titleField, '')
     I.fillField(this.locators.titleField, 'This Article Is Updated')
-    // pause()
-    // I.click(this.locators.saveMenu)
     I.click(this.locators.saveGoBack)
     I.waitForText('The document has been updated')
     I.wait(4)
@@ -195,7 +192,7 @@ module.exports = {
     I.seeInCurrentUrl(id)
     let updatedSlug = await I.grabValueFrom(this.locators.slugField)
     I.seeStringsAreEqual(updatedSlug, 'this-article-is-updated')
-    // pause()
+    I.click(this.locators.articleLink)
   },
 
   async deleteArticle() {

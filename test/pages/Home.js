@@ -23,7 +23,6 @@ module.exports = {
 
   async goToArticles() {
     I.click(this.locators.articleLink)
-    // pause()
     I.waitForFunction(() => document.readyState === 'complete')
     await I.seeInCurrentUrl('/articles')
   },

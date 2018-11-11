@@ -13,7 +13,7 @@
     "@dadi/api-wrapper": "^3.2.0",
     "anyid": "^1.0.5",
     "chai": "^4.1.2",
-    "codeceptjs": "^1.4.2",
+    "codeceptjs": "^1.4.5",
     "mocha-jenkins-reporter": "^0.4.0",
     "mocha-multi": "^1.0.1",
     "mochawesome": "^3.0.3",

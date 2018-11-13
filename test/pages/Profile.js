@@ -16,11 +16,11 @@ module.exports = {
     }).find('input').as('Username Field')),
     currentPasswordField: (locate('div').withAttr({
       'data-field-name': 'password'
-    }).find('input').before(locate('div').withText('Current password'))), //.as('Current Password Field')),
-    newPasswordField: (locate('.//div[2]/div[1]/div/label[2]/input')), //.as('New Password Field')),
+    }).find('input').before(locate('div').withText('Current password')).as('Current Password Field')),
+    newPasswordField: (locate('.//div[2]/div[1]/div/label[2]/input').as('New Password Field')),
     confirmNewPasswordField: (locate('div').withAttr({
       'data-field-name': 'password'
-    }).find('input').before(locate('div').withText('New password (confirm)'))), //.as('Confirm New Password Field')),
+    }).find('input').before(locate('div').withText('New password (confirm)')).as('Confirm New Password Field')),
     firstNameField: (locate('div').withAttr({
       'data-field-name': 'firstName'
     }).find('input').as('First Name Field')),

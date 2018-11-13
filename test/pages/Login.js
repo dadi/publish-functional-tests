@@ -89,9 +89,17 @@ module.exports = {
     let data = await I.getSessionToken(id, secret)
     let x = JSON.parse(data)
     let token = x.accessToken
+    let value = Date.now() + 1800 * 1000
     // console.log(token)
     await I.amOnPage(url)
-    await I.setCookie({name: 'accessToken', value: token})
+    await I.setCookie({
+      name: 'accessToken',
+      value: token
+    })
+    await I.setCookie({
+      name: 'accessTokenExpiry',
+      value: value.toString()
+    })
     await I.resizeWindow(1200, 650)
   },
 

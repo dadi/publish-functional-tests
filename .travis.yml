@@ -3,7 +3,7 @@ cache:
   directories:
   - node_modules
 after_failure:
-  script: ./scripts/upload-artifacts.sh /home/travis/build/dadi/publish-functional-tests/test/output
+  - ./scripts/upload-artifacts.sh /home/travis/build/dadi/publish-functional-tests/test/output
 notifications:
   webhooks:
     urls:

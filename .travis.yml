@@ -2,8 +2,7 @@ language: node_js
 cache:
   directories:
   - node_modules
-deploy:
-  skip_cleanup: true
+after_failure:
   script: ./scripts/upload-artifacts.sh /home/travis/build/dadi/publish-functional-tests/test/output
 notifications:
   webhooks:

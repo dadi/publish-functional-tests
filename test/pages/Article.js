@@ -49,6 +49,7 @@ module.exports = {
     saveGoBack: (locate('button').withText('Save and go back').as('Save And Go Back Button')),
     saveArticle: (locate('button').withText('Save and continue').as('Save And Continue Button')),
     createdArticle: (locate('a').withText('This Is A New Article').as('New Article')),
+    signOutArticle: (locate('.//main/table/tbody/tr[1]/td[2]/a').as('Sign Out Article')),
     updatedArticle: (locate('a').withText('This Article Is Updated').as('Updated Article')),
     slugField: (locate('div').withAttr({
       'data-field-name': 'slug'
@@ -70,7 +71,8 @@ module.exports = {
       'data-field-name': 'network-service'
     }).find('button').as('Remove Network Service Button')),
     networkService: (locate('label').withText('Network service')),
-    authorPage: (locate('a').withText('4').as('Page 4'))
+    authorPage: (locate('a').withText('4').as('Page 4')),
+    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document'))
   },
 
   async validateArticlePage() {
@@ -99,6 +101,15 @@ module.exports = {
     I.click(this.locators.saveArticle)
     I.waitForText('The document has been created')
     I.wait(3)
+    I.click(this.locators.selectAuthor)
+    I.waitForFunction(() => document.readyState === 'complete')
+    I.seeInCurrentUrl('/select/author')
+    I.waitForText('Team')
+    I.wait(1)
+    I.click(this.locators.nevermindButton)
+    I.waitForFunction(() => document.readyState === 'complete')
+    I.dontSeeInCurrentUrl('/select/author')
+    I.seeInField(this.locators.titleField, 'This Is A New Article')
     I.click(this.locators.selectAuthor)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author')
@@ -209,6 +220,33 @@ module.exports = {
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
     // console.log(newTotal)
     I.seeTotalHasDecreased(newTotal, total)
+  },
+
+  async newSignOut() {
+    I.click(this.locators.createNewButton)
+    I.waitForFunction(() => document.readyState === 'complete')
+    I.seeInCurrentUrl('/articles/new')
+  },
+
+  async editSignOut() {
+    // I.click(this.locators.createNewButton)
+    // I.waitForFunction(() => document.readyState === 'complete')
+    // I.seeInCurrentUrl('/articles/new')
+    // I.fillField(this.locators.titleField, 'Sign Out Article')
+    // I.fillField(this.locators.excerptField, 'This is the excerpt')
+    // I.fillField(this.locators.bodyField, 'This is the body of the article')
+    // I.click(this.locators.saveMenu)
+    // I.click(this.locators.saveGoBack)
+    // I.waitForText('The document has been created')
+    // I.wait(3)
+    let link = await I.grabAttributeFrom(this.locators.signOutArticle, 'href')
+    // console.log(link)
+    let start = link.indexOf('/articles/')
+    // console.log(start)
+    let id = link.slice(start)
+    // console.log(id)
+    I.click(this.locators.signOutArticle)
+    I.seeInCurrentUrl(id)
   },
 
   async deleteDocument(title) {

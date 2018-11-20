@@ -77,7 +77,13 @@ module.exports = {
     networkService: (locate('label').withText('Network service').as('Network Service')),
     webService: (locate('label').withText('Web service').as('Web Service')),
     authorPage: (locate('a').withText('4').as('Page 4')),
-    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document'))
+    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
+    boldButton: (locate('div').withAttr({
+      'data-field-name': 'body'
+    }).find('button').withAttr({ 'title': 'Bold'})),
+    boldText: (locate('div').withAttr({
+      'data-field-name': 'body'
+    }).find('div').withText('Bold'))
   },
 
   async validateArticlePage() {
@@ -270,6 +276,20 @@ module.exports = {
 
   async deleteDocument(title) {
     await I.deleteArticleByTitle(title)
+  },
+
+  async richTextInput() {
+    await I.amOnPage('/articles/new')
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.seeInCurrentUrl('/articles/new')
+    await I.waitForVisible(this.locators.titleField)
+    await I.fillField(this.locators.titleField, 'Rich Text')
+    pause()
+    await I.click(this.locators.boldButton)
+    await I.fillField(this.locators.bodyField, 'Bold')
+    await I.doubleClick(this.locators.boldText)
+    // I.click(this.locators.boldButton)
+    I.click(this.locators.saveArticle)
   }
 
 }

@@ -45,7 +45,7 @@ module.exports = {
     metaTitle: (locate('div').withAttr({
       'data-field-name': 'metaTitle'
     }).find('input').as('Meta Title Field')),
-    saveMenu: (locate('.//div[3]/div/div/button[2]').as('Save Menu')),
+    saveMenu: (locate('.//div[2]/div[2]/div/button[2]').as('Save Menu')),
     saveGoBack: (locate('button').withText('Save and go back').as('Save And Go Back Button')),
     saveArticle: (locate('button').withText('Save and continue').as('Save And Continue Button')),
     createdArticle: (locate('a').withText('This Is A New Article').as('New Article')),
@@ -65,12 +65,17 @@ module.exports = {
     checkCategory: (locate('td').withText('Knowledge').as('Knowledge Row')),
     addSelected: (locate('button').withText('Add selected document').as('Add Selected Document Button')),
     checkSubCategory: (locate('td').withText('Network').as('Network Row')),
-    checkWebService: (locate('td').withText('RESTful API').as('API Row')),
+    apiWebService: (locate('td').withText('RESTful API').as('API Row')),
+    cdnWebService: (locate('td').withText('faster content').as('CDN Row')),
     checkNetworkService: (locate('td').withText('processing power').as('Host Row')),
-    removeButton: (locate('div').withAttr({
+    removeNetworkButton: (locate('div').withAttr({
       'data-field-name': 'network-service'
     }).find('button').as('Remove Network Service Button')),
-    networkService: (locate('label').withText('Network service')),
+    editWebServiceButton: (locate('div').withAttr({
+      'data-field-name': 'web-service'
+    }).find('a').withText('Edit').as('Edit Web Service Button')),
+    networkService: (locate('label').withText('Network service').as('Network Service')),
+    webService: (locate('label').withText('Web service').as('Web Service')),
     authorPage: (locate('a').withText('4').as('Page 4')),
     nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document'))
   },
@@ -148,10 +153,12 @@ module.exports = {
     I.seeInCurrentUrl('/select/web-service')
     I.waitForText('Web service')
     I.waitForText('API')
-    I.click(this.locators.checkWebService)
+    I.click(this.locators.apiWebService)
+    I.click(this.locators.cdnWebService)
     I.click(this.locators.addSelected)
     I.waitForFunction(() => document.readyState === 'complete')
     I.see('API')
+    I.see('CDN')
     I.scrollTo(this.locators.selectNetworkService)
     I.click(this.locators.selectNetworkService)
     I.waitForFunction(() => document.readyState === 'complete')
@@ -163,7 +170,7 @@ module.exports = {
     I.waitForFunction(() => document.readyState === 'complete')
     I.scrollTo(this.locators.networkService)
     I.see('Host')
-    I.click(this.locators.removeButton)
+    I.click(this.locators.removeNetworkButton)
     I.seeElement(this.locators.selectNetworkService)
     I.click(this.locators.metaTab)
     I.waitForFunction(() => document.readyState === 'complete')
@@ -194,6 +201,18 @@ module.exports = {
     I.seeStringsAreEqual(slug, 'this-is-a-new-article')
     I.fillField(this.locators.titleField, '')
     I.fillField(this.locators.titleField, 'This Article Is Updated')
+    I.scrollTo(this.locators.webService)
+    I.click(this.locators.editWebServiceButton)
+    I.waitForFunction(() => document.readyState === 'complete')
+    I.seeInCurrentUrl('/select/web-service')
+    I.waitForText('Web service')
+    I.waitForText('API')
+    I.click(this.locators.cdnWebService)
+    I.click(this.locators.addSelected)
+    I.waitForFunction(() => document.readyState === 'complete')
+    I.scrollTo(this.locators.webService)
+    I.see('API')
+    I.dontSee('CDN')
     I.click(this.locators.saveGoBack)
     I.waitForText('The document has been updated')
     I.wait(4)

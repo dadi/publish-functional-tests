@@ -45,7 +45,7 @@ module.exports = {
     metaTitle: (locate('div').withAttr({
       'data-field-name': 'metaTitle'
     }).find('input').as('Meta Title Field')),
-    saveMenu: (locate('.//div[2]/div[2]/div/button[2]').as('Save Menu')),
+    saveMenu: (locate('button[class*="ButtonWithOptions__launcher"]').as('Save Menu')),
     saveGoBack: (locate('button').withText('Save and go back').as('Save And Go Back Button')),
     saveArticle: (locate('button').withText('Save and continue').as('Save And Continue Button')),
     createdArticle: (locate('a').withText('This Is A New Article').as('New Article')),

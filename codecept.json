@@ -2,7 +2,7 @@
   "output": "./test/output",
   "helpers": {
     "Puppeteer": {
-      "url": "http://publish-feature-improved-filters.eb.dev.dadi.technology",
+      "url": "http://publish-develop.eb.dev.dadi.technology",
       "show": false,
       "restart": false,
       "waitForAction": 1000,

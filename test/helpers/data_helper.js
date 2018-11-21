@@ -220,7 +220,18 @@ class Data extends Helper {
                   }
                 })
 
-                return this.makeRequest(options, postData)
+                return this.makeRequest(options, postData).then(() => {
+
+                      postData = JSON.stringify({
+                        'name': 'media:mediaStore',
+                        'access': {
+                          'create': true,
+                          'delete': true,
+                          'read': true,
+                          'update': true
+                        }
+                      })
+                    })
               })
             })
           })

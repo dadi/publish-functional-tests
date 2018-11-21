@@ -83,7 +83,7 @@ module.exports = {
     }).find('button').withAttr({ 'title': 'Bold'})),
     boldText: (locate('div').withAttr({
       'data-field-name': 'body'
-    }).find('div').withText('Bold'))
+    }).find('div[class*="RichEditor__editor___"]').withText('Bold'))
   },
 
   async validateArticlePage() {
@@ -110,13 +110,13 @@ module.exports = {
     I.fillField(this.locators.excerptField, 'This is the excerpt')
     I.fillField(this.locators.bodyField, 'This is the body of the new article')
     I.click(this.locators.saveArticle)
-    I.waitForText('The document has been created')
-    I.wait(3)
+    I.waitForText('The document has been created', 2)
+    // I.wait(3)
     I.click(this.locators.selectAuthor)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author')
     I.waitForText('Author')
-    I.wait(1)
+    // I.wait(1)
     I.click(this.locators.nevermindButton)
     I.waitForFunction(() => document.readyState === 'complete')
     I.dontSeeInCurrentUrl('/select/author')
@@ -125,7 +125,7 @@ module.exports = {
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author')
     I.waitForText('Author')
-    I.wait(1)
+    // I.wait(1)
     I.click(this.locators.authorPage)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author/4')
@@ -185,7 +185,7 @@ module.exports = {
     I.click(this.locators.saveMenu)
     I.click(this.locators.saveGoBack)
     I.waitForText('The document has been updated')
-    I.wait(4)
+    I.wait(3)
     I.seeInCurrentUrl('/articles')
     I.see('This Is A New Article')
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
@@ -220,8 +220,8 @@ module.exports = {
     I.see('API')
     I.dontSee('CDN')
     I.click(this.locators.saveGoBack)
-    I.waitForText('The document has been updated')
-    I.wait(4)
+    I.waitForText('The document has been updated', 2)
+    I.wait(3)
     I.seeInCurrentUrl('/articles')
     I.see('This Article Is Updated')
     I.click(this.locators.updatedArticle)
@@ -239,8 +239,8 @@ module.exports = {
     I.click(this.locators.applyButton)
     I.waitForText('Are you sure you want to delete the selected document?')
     I.click(this.locators.deleteButton)
-    I.waitForText('The document has been deleted')
-    I.wait(4)
+    I.waitForText('The document has been deleted', 2)
+    I.wait(3)
     I.dontSee('This Article Is Updated')
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
     // console.log(newTotal)
@@ -254,16 +254,6 @@ module.exports = {
   },
 
   async editSignOut() {
-    // I.click(this.locators.createNewButton)
-    // I.waitForFunction(() => document.readyState === 'complete')
-    // I.seeInCurrentUrl('/articles/new')
-    // I.fillField(this.locators.titleField, 'Sign Out Article')
-    // I.fillField(this.locators.excerptField, 'This is the excerpt')
-    // I.fillField(this.locators.bodyField, 'This is the body of the article')
-    // I.click(this.locators.saveMenu)
-    // I.click(this.locators.saveGoBack)
-    // I.waitForText('The document has been created')
-    // I.wait(3)
     let link = await I.grabAttributeFrom(this.locators.signOutArticle, 'href')
     // console.log(link)
     let start = link.indexOf('/articles/')
@@ -285,10 +275,11 @@ module.exports = {
     await I.waitForVisible(this.locators.titleField)
     await I.fillField(this.locators.titleField, 'Rich Text')
     pause()
-    await I.click(this.locators.boldButton)
+    // await I.click(this.locators.boldButton)
     await I.fillField(this.locators.bodyField, 'Bold')
-    await I.doubleClick(this.locators.boldText)
-    // I.click(this.locators.boldButton)
+    await I.doubleClick(this.locators.bodyField)
+    await I.click(this.locators.boldButton)
+    // I.appendField(this.locators.bodyField, 'appended')
     I.click(this.locators.saveArticle)
   }
 

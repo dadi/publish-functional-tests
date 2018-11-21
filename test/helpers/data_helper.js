@@ -2,6 +2,7 @@
 
 const DADIAPI = require('@dadi/api-wrapper')
 const http = require('http')
+const promiseQueue = require('js-promise-queue')
 
 const config = {
   api: {
@@ -29,7 +30,6 @@ function getApi () {
 }
 
 class Data extends Helper {
-  // Create test client
   async createClient (id, secret) {
     let client = {
       clientId: id,
@@ -44,9 +44,7 @@ class Data extends Helper {
       .then(doc => {
         return this.getToken()
           .then(result => {
-            // console.log('token:', result)
-
-            return this.addResources(JSON.parse(result).accessToken, client).then(result => {
+            this.addResources(JSON.parse(result).accessToken, client).then(result => {
               // console.log('result :', result)
             })
           })
@@ -85,6 +83,7 @@ class Data extends Helper {
 
   getToken () {
     let postData = JSON.stringify(config.api.credentials)
+    // console.log("THIS" + postData)
 
     let options = {
       hostname: config.api.host,
@@ -96,18 +95,15 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData)
+    return this.makeRequest({ options, data: postData })
   }
 
   async getSessionToken (id, secret) {
-    // let postData = JSON.stringify(config.api.credentials)
     let postData = JSON.stringify({
       clientId: id,
       secret: secret
     })
 
-    // console.log("SESSION" + postData)
-
     let options = {
       hostname: config.api.host,
       port: config.api.port,
@@ -118,20 +114,10 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData)
+    return this.makeRequest({ options, data: postData })
   }
 
   addResources (accessToken, client) {
-    let postData = JSON.stringify({
-      name: 'collection:cloud_articles',
-      access: {
-        create: true,
-        delete: true,
-        read: true,
-        update: true
-      }
-    })
-
     let options = {
       hostname: config.api.host,
       port: config.api.port,
@@ -143,20 +129,23 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData).then(() => {
-      postData = JSON.stringify({
-        name: 'collection:cloud_categories',
-        access: {
-          create: true,
-          delete: true,
-          read: true,
-          update: true
-        }
-      })
+    let resourceList = [
+      'collection:cloud_articles',
+      'collection:cloud_categories',
+      'collection:cloud_network-services',
+      'collection:cloud_sub-categories',
+      'collection:cloud_web-services',
+      'collection:cloud_images',
+      'collection:cloud_team',
+      'media:mediaStore'
+    ]
+    let resources = []
 
-      return this.makeRequest(options, postData).then(() => {
-        postData = JSON.stringify({
-          name: 'collection:cloud_network-services',
+    resourceList.forEach(resource => {
+      resources.push({
+        options: options,
+        data: JSON.stringify({
+          name: resource,
           access: {
             create: true,
             delete: true,
@@ -164,69 +153,19 @@ class Data extends Helper {
             update: true
           }
         })
-
-        return this.makeRequest(options, postData).then(() => {
-          postData = JSON.stringify({
-            name: 'collection:cloud_sub-categories',
-            access: {
-              create: true,
-              delete: true,
-              read: true,
-              update: true
-            }
-          })
-
-          return this.makeRequest(options, postData).then(() => {
-            postData = JSON.stringify({
-              name: 'collection:cloud_web-services',
-              access: {
-                create: true,
-                delete: true,
-                read: true,
-                update: true
-              }
-            })
-
-            return this.makeRequest(options, postData).then(() => {
-              postData = JSON.stringify({
-                name: 'collection:cloud_images',
-                access: {
-                  create: true,
-                  delete: true,
-                  read: true,
-                  update: true
-                }
-              })
-
-              return this.makeRequest(options, postData).then(() => {
-                postData = JSON.stringify({
-                  name: 'collection:cloud_team',
-                  access: {
-                    create: true,
-                    delete: true,
-                    read: true,
-                    update: true
-                  }
-                })
-
-                return this.makeRequest(options, postData)
-              })
-            })
-          })
-        })
       })
+    })
+
+    return promiseQueue(resources, this.makeRequest, {
+      interval: 300
     })
   }
 
-  async makeRequest (options, postData) {
-    // console.log('options :', options)
-    // console.log('postData :', postData)
-
+  makeRequest (obj) {
     return new Promise((resolve, reject) => {
-      let req = http.request(options, res => {
+      let req = http.request(obj.options, (res) => {
         // console.log(`STATUS: ${res.statusCode}`)
         // console.log(`HEADERS: ${JSON.stringify(res.headers)}`)
-
         let data = ''
 
         res.setEncoding('utf8')
@@ -244,9 +183,9 @@ class Data extends Helper {
         return reject(e)
       })
 
-      if (postData) {
+      if (obj.data) {
         // write data to request body
-        req.write(postData)
+        req.write(obj.data)
       }
 
       req.end()

@@ -19,5 +19,8 @@
     "mochawesome": "^3.0.3",
     "puppeteer": "1.9.0",
     "speakeasy": "^2.0.0"
+  },
+  "dependencies": {
+    "js-promise-queue": "^1.1.0"
   }
 }

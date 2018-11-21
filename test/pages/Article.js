@@ -38,9 +38,7 @@ module.exports = {
     excerptField: (locate('div').withAttr({
       'data-field-name': 'excerpt'
     }).find('textarea').as('Excerpt Field')),
-    bodyField: (locate('div').withAttr({
-    'contenteditable': 'true'
-    }).as('Body Field')),
+    bodyField: (locate('div[class^="RichEditor__editor"]').as('Body Field')),
     metaTab: (locate('a').withText('Meta').as('Meta Tab')),
     metaTitle: (locate('div').withAttr({
       'data-field-name': 'metaTitle'
@@ -78,9 +76,7 @@ module.exports = {
     webService: (locate('label').withText('Web service').as('Web Service')),
     authorPage: (locate('a').withText('4').as('Page 4')),
     nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
-    boldButton: (locate('div').withAttr({
-      'data-field-name': 'body'
-    }).find('button').withAttr({ 'title': 'Bold'})),
+    boldButton: (locate('button[title="Bold"]')),
     boldText: (locate('div').withAttr({
       'data-field-name': 'body'
     }).find('div[class*="RichEditor__editor___"]').withText('Bold'))
@@ -274,13 +270,12 @@ module.exports = {
     await I.seeInCurrentUrl('/articles/new')
     await I.waitForVisible(this.locators.titleField)
     await I.fillField(this.locators.titleField, 'Rich Text')
+
+    // console.log('I :', I)
+    await I.setBoldText(this.locators) // this is in new helper editor_helper.js
     pause()
-    // await I.click(this.locators.boldButton)
-    await I.fillField(this.locators.bodyField, 'Bold')
-    await I.doubleClick(this.locators.bodyField)
-    await I.click(this.locators.boldButton)
-    // I.appendField(this.locators.bodyField, 'appended')
-    I.click(this.locators.saveArticle)
+
+    await I.click(this.locators.saveArticle)
   }
 
 }

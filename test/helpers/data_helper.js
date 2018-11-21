@@ -15,7 +15,7 @@ const config = {
   }
 }
 
-function getApi() {
+function getApi () {
   return new DADIAPI({
     uri: config.api.protocol + '://' + config.api.host,
     port: config.api.port,
@@ -29,9 +29,8 @@ function getApi() {
 }
 
 class Data extends Helper {
-  //create test client
-  async createClient(id, secret) {
-
+  // Create test client
+  async createClient (id, secret) {
     let client = {
       clientId: id,
       secret: secret
@@ -43,9 +42,6 @@ class Data extends Helper {
       .inClients()
       .create(client)
       .then(doc => {
-        // console.log('New document:', doc)
-
-        // console.log('Obtaining access token')
         return this.getToken()
           .then(result => {
             // console.log('token:', result)
@@ -59,7 +55,7 @@ class Data extends Helper {
       })
   }
 
-  async deleteClient(id) {
+  async deleteClient (id) {
     let api = getApi()
 
     await api
@@ -68,12 +64,12 @@ class Data extends Helper {
       .delete()
       .then(() => {
         // console.log('Deleted ' + id)
-      }).catch(err => {
+      }).catch(_err => {
         // console.log('! Error:', err)
       })
   }
 
-  async deleteArticleByTitle(title) {
+  async deleteArticleByTitle (title) {
     let api = getApi()
 
     await api
@@ -87,9 +83,8 @@ class Data extends Helper {
       })
   }
 
-  getToken() {
+  getToken () {
     let postData = JSON.stringify(config.api.credentials)
-    // console.log("THIS" + postData)
 
     let options = {
       hostname: config.api.host,
@@ -104,7 +99,7 @@ class Data extends Helper {
     return this.makeRequest(options, postData)
   }
 
-  async getSessionToken(id, secret) {
+  async getSessionToken (id, secret) {
     // let postData = JSON.stringify(config.api.credentials)
     let postData = JSON.stringify({
       clientId: id,
@@ -126,14 +121,14 @@ class Data extends Helper {
     return this.makeRequest(options, postData)
   }
 
-  addResources(accessToken, client) {
+  addResources (accessToken, client) {
     let postData = JSON.stringify({
-      'name': 'collection:cloud_articles',
-      'access': {
-        'create': true,
-        'delete': true,
-        'read': true,
-        'update': true
+      name: 'collection:cloud_articles',
+      access: {
+        create: true,
+        delete: true,
+        read: true,
+        update: true
       }
     })
 
@@ -149,74 +144,68 @@ class Data extends Helper {
     }
 
     return this.makeRequest(options, postData).then(() => {
-
       postData = JSON.stringify({
-        'name': 'collection:cloud_categories',
-        'access': {
-          'create': true,
-          'delete': true,
-          'read': true,
-          'update': true
+        name: 'collection:cloud_categories',
+        access: {
+          create: true,
+          delete: true,
+          read: true,
+          update: true
         }
       })
 
       return this.makeRequest(options, postData).then(() => {
-
         postData = JSON.stringify({
-          'name': 'collection:cloud_network-services',
-          'access': {
-            'create': true,
-            'delete': true,
-            'read': true,
-            'update': true
+          name: 'collection:cloud_network-services',
+          access: {
+            create: true,
+            delete: true,
+            read: true,
+            update: true
           }
         })
 
         return this.makeRequest(options, postData).then(() => {
-
           postData = JSON.stringify({
-            'name': 'collection:cloud_sub-categories',
-            'access': {
-              'create': true,
-              'delete': true,
-              'read': true,
-              'update': true
+            name: 'collection:cloud_sub-categories',
+            access: {
+              create: true,
+              delete: true,
+              read: true,
+              update: true
             }
           })
 
           return this.makeRequest(options, postData).then(() => {
-
             postData = JSON.stringify({
-              'name': 'collection:cloud_web-services',
-              'access': {
-                'create': true,
-                'delete': true,
-                'read': true,
-                'update': true
+              name: 'collection:cloud_web-services',
+              access: {
+                create: true,
+                delete: true,
+                read: true,
+                update: true
               }
             })
 
             return this.makeRequest(options, postData).then(() => {
-
               postData = JSON.stringify({
-                'name': 'collection:cloud_images',
-                'access': {
-                  'create': true,
-                  'delete': true,
-                  'read': true,
-                  'update': true
+                name: 'collection:cloud_images',
+                access: {
+                  create: true,
+                  delete: true,
+                  read: true,
+                  update: true
                 }
               })
 
               return this.makeRequest(options, postData).then(() => {
-
                 postData = JSON.stringify({
-                  'name': 'collection:cloud_team',
-                  'access': {
-                    'create': true,
-                    'delete': true,
-                    'read': true,
-                    'update': true
+                  name: 'collection:cloud_team',
+                  access: {
+                    create: true,
+                    delete: true,
+                    read: true,
+                    update: true
                   }
                 })
 
@@ -229,20 +218,19 @@ class Data extends Helper {
     })
   }
 
-  async makeRequest(options, postData) {
+  async makeRequest (options, postData) {
     // console.log('options :', options)
     // console.log('postData :', postData)
 
     return new Promise((resolve, reject) => {
-      let req = http.request(options, (res) => {
+      let req = http.request(options, res => {
         // console.log(`STATUS: ${res.statusCode}`)
         // console.log(`HEADERS: ${JSON.stringify(res.headers)}`)
 
         let data = ''
 
         res.setEncoding('utf8')
-        res.on('data', (chunk) => {
-          // console.log(`BODY: ${chunk}`)
+        res.on('data', chunk => {
           data += chunk
         })
 
@@ -251,7 +239,7 @@ class Data extends Helper {
         })
       })
 
-      req.on('error', (e) => {
+      req.on('error', e => {
         console.error(`problem with request: ${e.message}`)
         return reject(e)
       })

@@ -77,9 +77,20 @@ module.exports = {
     authorPage: (locate('a').withText('4').as('Page 4')),
     nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
     boldButton: (locate('button[title="Bold"]')),
-    boldText: (locate('div').withAttr({
-      'data-field-name': 'body'
-    }).find('div[class*="RichEditor__editor___"]').withText('Bold'))
+    italicButton: (locate('button[title="Italic"]')),
+    underlineButton: (locate('button[title="Underline"]')),
+    linkButton: (locate('button[title="Link"]')),
+    h1Button: (locate('button[title="Heading 1"]')),
+    h2Button: (locate('button[title="Heading 2"]')),
+    quoteButton: (locate('button[title="Quote"]')),
+    orderedListButton: (locate('button[title="Ordered list"]')),
+    unOrderedListButton: (locate('button[title="Unordered list"]')),
+    codeButton: (locate('button[title="Code"]')),
+    imageButton: (locate('button[title="Image"]')),
+    fullScreenButton: (locate('button[title="Fullscreen"]')),
+    textButton: (locate('button[title="Text mode"]')),
+    boldText: (locate('span').withText('Bold')),
+    italicText: (locate('span').withText('Italic'))
   },
 
   async validateArticlePage() {
@@ -272,10 +283,51 @@ module.exports = {
     await I.fillField(this.locators.titleField, 'Rich Text')
 
     // console.log('I :', I)
-    await I.setBoldText(this.locators) // this is in new helper editor_helper.js
+    await I.typeAndSelect(this.locators.bodyField, 'Bold') // this is in new helper editor_helper.js
+    await I.click(this.locators.boldButton)
+    await I.appendField(this.locators.bodyField, ' ')
+    await I.click(this.locators.boldButton)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    
+    // pause()
+    await I.typeAndSelect(this.locators.bodyField, 'Italic')
+    await I.click(this.locators.italicButton)
+    await I.appendField(this.locators.bodyField, ' ')
+    await I.click(this.locators.italicButton)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    
+    // pause()
+    await I.typeAndSelect(this.locators.bodyField, 'Underline')
+    await I.click(this.locators.underlineButton)
+    await I.appendField(this.locators.bodyField, ' ')
+    await I.click(this.locators.underlineButton)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    
+
+    await I.typeAndSelect(this.locators.bodyField, 'Header 1')
+    await I.click(this.locators.h1Button)
+    await I.appendField(this.locators.bodyField, ' ')
+    await I.click(this.locators.h1Button)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+
+    await I.typeAndSelect(this.locators.bodyField, 'Header 2')
+    await I.click(this.locators.h2Button)
+    await I.appendField(this.locators.bodyField, ' ')
+    await I.click(this.locators.h2Button)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
     pause()
 
     await I.click(this.locators.saveArticle)
+
+    let attr = await I.grabAttributeFrom(this.locators.boldText, 'style')
+    console.log(attr)
+    let attr1 = await I.grabAttributeFrom(this.locators.italicText, 'style')
+    console.log(attr1)
   }
 
 }

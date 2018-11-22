@@ -9,20 +9,20 @@ class Editor extends Helper {
     return this.helpers['Puppeteer'].page
   }
 
-  async setBoldText (locators) {
+  async typeAndSelect (locator, text) {
     let page = await this.getPage()
 
-    await page.click(locators.bodyField.value)
-    await page.keyboard.type('Bold')
+    await page.click(locator.value)
+    await page.keyboard.type(text)
     await page.keyboard.down('Shift')
 
-    for (let i = 0; i < 'Bold'.length; i++) {
+    for (let i = 0; i < text.length; i++) {
       await page.keyboard.press('ArrowLeft')
     }
 
     await page.keyboard.up('Shift')
 
-    await page.click(locators.boldButton.value)
+    // await page.click(locators.boldButton.value)
   }
 
   async getThePage () {

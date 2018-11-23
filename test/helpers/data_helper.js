@@ -2,6 +2,7 @@
 
 const DADIAPI = require('@dadi/api-wrapper')
 const http = require('http')
+const promiseQueue = require('js-promise-queue')
 
 const config = {
   api: {
@@ -29,9 +30,7 @@ function getApi() {
 }
 
 class Data extends Helper {
-  //create test client
   async createClient(id, secret) {
-
     let client = {
       clientId: id,
       secret: secret
@@ -43,14 +42,9 @@ class Data extends Helper {
       .inClients()
       .create(client)
       .then(doc => {
-        // console.log('New document:', doc)
-
-        // console.log('Obtaining access token')
         return this.getToken()
           .then(result => {
-            // console.log('token:', result)
-
-            return this.addResources(JSON.parse(result).accessToken, client).then(result => {
+            this.addResources(JSON.parse(result).accessToken, client).then(result => {
               // console.log('result :', result)
             })
           })
@@ -68,7 +62,7 @@ class Data extends Helper {
       .delete()
       .then(() => {
         // console.log('Deleted ' + id)
-      }).catch(err => {
+      }).catch(_err => {
         // console.log('! Error:', err)
       })
   }
@@ -101,17 +95,17 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData)
+    return this.makeRequest({
+      options,
+      data: postData
+    })
   }
 
   async getSessionToken(id, secret) {
-    // let postData = JSON.stringify(config.api.credentials)
     let postData = JSON.stringify({
       clientId: id,
       secret: secret
     })
-
-    // console.log("SESSION" + postData)
 
     let options = {
       hostname: config.api.host,
@@ -123,20 +117,13 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData)
+    return this.makeRequest({
+      options,
+      data: postData
+    })
   }
 
   addResources(accessToken, client) {
-    let postData = JSON.stringify({
-      'name': 'collection:cloud_articles',
-      'access': {
-        'create': true,
-        'delete': true,
-        'read': true,
-        'update': true
-      }
-    })
-
     let options = {
       hostname: config.api.host,
       port: config.api.port,
@@ -148,101 +135,47 @@ class Data extends Helper {
       }
     }
 
-    return this.makeRequest(options, postData).then(() => {
+    let resourceList = [
+      'collection:cloud_articles',
+      'collection:cloud_categories',
+      'collection:cloud_network-services',
+      'collection:cloud_sub-categories',
+      'collection:cloud_web-services',
+      'collection:cloud_images',
+      'collection:cloud_team',
+      'media:mediaStore'
+    ]
+    let resources = []
 
-      postData = JSON.stringify({
-        'name': 'collection:cloud_categories',
-        'access': {
-          'create': true,
-          'delete': true,
-          'read': true,
-          'update': true
-        }
-      })
-
-      return this.makeRequest(options, postData).then(() => {
-
-        postData = JSON.stringify({
-          'name': 'collection:cloud_network-services',
-          'access': {
-            'create': true,
-            'delete': true,
-            'read': true,
-            'update': true
+    resourceList.forEach(resource => {
+      resources.push({
+        options: options,
+        data: JSON.stringify({
+          name: resource,
+          access: {
+            create: true,
+            delete: true,
+            read: true,
+            update: true
           }
-        })
-
-        return this.makeRequest(options, postData).then(() => {
-
-          postData = JSON.stringify({
-            'name': 'collection:cloud_sub-categories',
-            'access': {
-              'create': true,
-              'delete': true,
-              'read': true,
-              'update': true
-            }
-          })
-
-          return this.makeRequest(options, postData).then(() => {
-
-            postData = JSON.stringify({
-              'name': 'collection:cloud_web-services',
-              'access': {
-                'create': true,
-                'delete': true,
-                'read': true,
-                'update': true
-              }
-            })
-
-            return this.makeRequest(options, postData).then(() => {
-
-              postData = JSON.stringify({
-                'name': 'collection:cloud_images',
-                'access': {
-                  'create': true,
-                  'delete': true,
-                  'read': true,
-                  'update': true
-                }
-              })
-
-              return this.makeRequest(options, postData).then(() => {
-
-                postData = JSON.stringify({
-                  'name': 'collection:cloud_team',
-                  'access': {
-                    'create': true,
-                    'delete': true,
-                    'read': true,
-                    'update': true
-                  }
-                })
-
-                return this.makeRequest(options, postData)
-              })
-            })
-          })
         })
       })
     })
+
+    return promiseQueue(resources, this.makeRequest, {
+      interval: 300
+    })
   }
 
-  async makeRequest(options, postData) {
-    // console.log('options :', options)
-    // console.log('postData :', postData)
-
+  makeRequest(obj) {
     return new Promise((resolve, reject) => {
-      let req = http.request(options, (res) => {
+      let req = http.request(obj.options, (res) => {
         // console.log(`STATUS: ${res.statusCode}`)
         // console.log(`HEADERS: ${JSON.stringify(res.headers)}`)
-
         let data = ''
 
         res.setEncoding('utf8')
-        res.on('data', (chunk) => {
-          // console.log(`BODY: ${chunk}`)
+        res.on('data', chunk => {
           data += chunk
         })
 
@@ -251,14 +184,14 @@ class Data extends Helper {
         })
       })
 
-      req.on('error', (e) => {
+      req.on('error', e => {
         console.error(`problem with request: ${e.message}`)
         return reject(e)
       })
 
-      if (postData) {
+      if (obj.data) {
         // write data to request body
-        req.write(postData)
+        req.write(obj.data)
       }
 
       req.end()

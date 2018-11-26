@@ -29,6 +29,7 @@
     "articlePage": "./test/pages/Article.js",
     "homePage": "./test/pages/Home.js",
     "loginPage": "./test/pages/Login.js",
+    "mediaPage": "./test/pages/Media.js",
     "profilePage": "./test/pages/Profile.js"
   },
   "mocha": {

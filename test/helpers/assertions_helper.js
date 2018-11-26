@@ -29,6 +29,10 @@ class Assertions extends Helper {
   seeTotalHasDecreased(actual, expected) {
     expect(actual < expected).to.be.true
   }
+
+  seeTotalGreaterThanZero(actual) {
+    expect(actual > 0).to.be.true
+  }
 }
 
 module.exports = Assertions

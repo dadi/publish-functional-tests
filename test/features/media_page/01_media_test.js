@@ -15,7 +15,14 @@ Before(async (loginPage) => {})
 
 After(async (loginPage) => {})
 
-Scenario('Media', async (mediaPage, homePage, loginPage) => {
-  await mediaPage.validateMediaPage()
-  // await articlePage.addArticle()
+Scenario('Add Media', async (mediaPage) => {
+  await mediaPage.addMedia()
+})
+
+Scenario('Select Media', async (mediaPage) => {
+  await mediaPage.selectMedia()
+})
+
+Scenario('Delete Media', async (mediaPage) => {
+  await mediaPage.deleteMedia()
 })

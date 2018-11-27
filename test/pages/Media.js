@@ -19,7 +19,8 @@ module.exports = {
     images: (locate('[class *= "MediaGridCard__wrapper___"]').as('Number of Images')),
     dropArea: (locate('[class *= "DropArea__droparea"]').as('Drop File Area')),
     fileUpload: (locate('input[class *= "FileUpload__file"]').as('File Upload')),
-    firstImage: (locate('a[class *= "MediaGridCard__image-holder___"]').first().as('First Image')),
+    firstImage: (locate('a[class *= "MediaGridCard__image-holder___"]').first().as('First Image')), 
+    stoneImage: (locate('img[src*="Stone.jpeg"]')),
     editImage: (locate('img[class *= "MediaEditor__image-preview___"]').as('Image Preview')),
     openNewWindow: (locate('a').withText('Open in new window').as('Open In New Window Link')),
     captionField: (locate('input').withAttr({ 'name': 'caption' }).as('Caption Field')),
@@ -44,7 +45,7 @@ module.exports = {
     await I.waitForText('Media Library')
     await I.waitForElement(this.locators.footer)
     await I.seeElement(this.locators.dropArea)
-    I.wait(2)
+    I.wait(3)
     let images = await I.grabNumberOfVisibleElements(this.locators.images)
     // console.log(images)
     await I.seeNumberOfVisibleElements(this.locators.images, images)
@@ -73,7 +74,7 @@ module.exports = {
     let id = link.slice(start)
     // console.log(id)
     //   I.click(this.locators.createdArticle)
-    await I.click(this.locators.firstImage)
+    await I.click(this.locators.stoneImage)
     await I.waitForFunction(() => document.readyState === 'complete')
     await I.seeInCurrentUrl(id)
     await I.see('Preview')
@@ -105,6 +106,15 @@ module.exports = {
     I.wait(2)
     let total = await I.grabTextFrom(this.locators.totalImages)
     // console.log(total)
+    await I.see('Stone.jpeg')
+    // pause()
+    // let link = await I.grabAttributeFrom(this.locators.firstImage, 'href')
+    // console.log(link)
+    // let start = link.indexOf('/media/')
+    // console.log(start)
+    // let id = link.slice(start)
+    // console.log(id)
+    //.//input[following-sibling::a[contains(./@href, '634c')]]
     I.click(this.locators.checkImage)
     I.selectOption(this.locators.selectDelete, 'Delete')
     I.click(this.locators.applyButton)
@@ -112,7 +122,6 @@ module.exports = {
     I.click(this.locators.deleteButton)
     // I.waitForText('The document has been deleted')
     I.wait(2)
-    // I.dontSee('This Article Is Updated')
     let newTotal = await I.grabTextFrom(this.locators.totalImages)
     // console.log(newTotal)
     I.seeTotalHasDecreased(newTotal, total)

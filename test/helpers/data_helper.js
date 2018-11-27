@@ -131,13 +131,12 @@ class Data extends Helper {
 
     let resourceList = [
       'collection:cloud_articles',
+      'media:mediaStore',
+      'collection:cloud_team',
       'collection:cloud_categories',
-      'collection:cloud_network-services',
       'collection:cloud_sub-categories',
       'collection:cloud_web-services',
-      'collection:cloud_images',
-      'collection:cloud_team',
-      'media:mediaStore'
+      'collection:cloud_network-services'
     ]
     let resources = []
 

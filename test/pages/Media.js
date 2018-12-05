@@ -107,28 +107,17 @@ module.exports = {
     let total = await I.grabTextFrom(this.locators.totalImages)
     // console.log(total)
     await I.see('Stone.jpeg')
-    // pause()
-    // let link = await I.grabAttributeFrom(this.locators.firstImage, 'href')
-    // console.log(link)
-    // let start = link.indexOf('/media/')
-    // console.log(start)
-    // let id = link.slice(start)
-    // console.log(id)
-    //.//input[following-sibling::a[contains(./@href, '634c')]]
     I.click(this.locators.checkImage)
     I.selectOption(this.locators.selectDelete, 'Delete')
     I.click(this.locators.applyButton)
     I.waitForText('Are you sure you want to delete the selected document?')
     I.click(this.locators.deleteButton)
-    // I.waitForText('The document has been deleted')
+    I.waitForText('The media item has been deleted')
     I.wait(2)
+    await I.dontSee('Stone.jpeg')
     let newTotal = await I.grabTextFrom(this.locators.totalImages)
     // console.log(newTotal)
     I.seeTotalHasDecreased(newTotal, total)
   }
-
-  // async deleteDocument(title) {
-  //   await I.deleteArticleByTitle(title)
-  // }
 
 }

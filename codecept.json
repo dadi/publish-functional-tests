@@ -3,7 +3,7 @@
   "helpers": {
     "Puppeteer": {
       "url": "http://publish-develop.eb.dev.dadi.technology",
-      "show": false,
+      "show": true,
       "restart": false,
       "waitForAction": 1000,
       "keepBrowserState": true,
@@ -27,6 +27,7 @@
   "include": {
     "I": "./test/stepDefinitions/steps_file.js",
     "articlePage": "./test/pages/Article.js",
+    "fieldPage": "./test/pages/Field.js",
     "homePage": "./test/pages/Home.js",
     "loginPage": "./test/pages/Login.js",
     "mediaPage": "./test/pages/Media.js",
@@ -76,7 +77,7 @@
       "enabled": true
     }
   },
-  "tests": "./test/features/*/*_test.js",
+  "tests": "./test/features/field*/*_test.js",
   "timeout": 10000,
   "name": "publish-test"
 }

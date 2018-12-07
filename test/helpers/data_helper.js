@@ -133,6 +133,7 @@ class Data extends Helper {
       'collection:cloud_articles',
       'media:mediaStore',
       'collection:cloud_team',
+      'collection:cloud_field-test',
       'collection:cloud_categories',
       'collection:cloud_sub-categories',
       'collection:cloud_web-services',

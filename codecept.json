@@ -3,7 +3,7 @@
   "helpers": {
     "Puppeteer": {
       "url": "http://publish-develop.eb.dev.dadi.technology",
-      "show": true,
+      "show": false,
       "restart": false,
       "waitForAction": 1000,
       "keepBrowserState": true,
@@ -79,7 +79,7 @@
       "enabled": true
     }
   },
-  "tests": "./test/features/articles/03*_test.js",
+  "tests": "./test/features/*/*_test.js",
   "timeout": 10000,
   "name": "publish-test"
 }

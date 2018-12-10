@@ -33,6 +33,10 @@ class Assertions extends Helper {
   seeTotalGreaterThanZero(actual) {
     expect(actual > 0).to.be.true
   }
+
+  seeStringContains(actual, expected) {
+    expect(actual).to.include(expected)
+  }
 }
 
 module.exports = Assertions

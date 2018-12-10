@@ -76,21 +76,34 @@ module.exports = {
     webService: (locate('label').withText('Web service').as('Web Service')),
     authorPage: (locate('a').withText('4').as('Page 4')),
     nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
-    boldButton: (locate('button[title="Bold"]')),
-    italicButton: (locate('button[title="Italic"]')),
-    underlineButton: (locate('button[title="Underline"]')),
-    linkButton: (locate('button[title="Link"]')),
-    h1Button: (locate('button[title="Heading 1"]')),
-    h2Button: (locate('button[title="Heading 2"]')),
-    quoteButton: (locate('button[title="Quote"]')),
-    orderedListButton: (locate('button[title="Ordered list"]')),
-    unOrderedListButton: (locate('button[title="Unordered list"]')),
-    codeButton: (locate('button[title="Code"]')),
-    imageButton: (locate('button[title="Image"]')),
-    fullScreenButton: (locate('button[title="Fullscreen"]')),
-    textButton: (locate('button[title="Text mode"]')),
-    boldText: (locate('span').withText('Bold')),
-    italicText: (locate('span').withText('Italic'))
+    boldButton: (locate('button[title="Bold"]').as('Bold Button')),
+    italicButton: (locate('button[title="Italic"]').as('Italic Button')),
+    strikeThruButton: (locate('button[title="Strike-through"]').as('Strike-through Button')),
+    linkButton: (locate('button[title="Link"]').as('Link Button')),
+    h1Button: (locate('button[title="Heading 1"]').as('Header 1 Button')),
+    h2Button: (locate('button[title="Heading 2"]').as('Header 2 Button')),
+    quoteButton: (locate('button[title="Quote"]').as('Blockquote Button')),
+    orderedListButton: (locate('button[title="Ordered List"]').as('Numbered List Button')),
+    unOrderedListButton: (locate('button[title="Unordered List"]').as('Bullet Point Button')),
+    codeButton: (locate('button[title="Code"]').as('Code Button')),
+    imageButton: (locate('button[title="Image"]').as('Image Button')),
+    fullScreenButton: (locate('button[title="Fullscreen"]').as('Full Screen Button')),
+    textButton: (locate('button[title="Text"]').as('Text Button')),
+    boldText: (locate('b').withText('Bold').as('Bold Text')),
+    italicText: (locate('i').withText('Italic').as('Italic Text')),
+    strikeText: (locate('strike').withText('Strike-through').as('Strike-through Text')),
+    textArea: (locate('div[class*="RichEditor__editor-wysiwyg"]').as('Rich Editor Text')),
+    markdownText: (locate('textarea[class*="RichEditor__editor-text"]').as('Markdown Text')),
+    quoteText: (locate('blockquote').withText('Blockquote').as('Blockquote Text')),
+    linkText: (locate('a').withAttr({ 'href': 'www.link.com'}).as('Link Text')),
+    orderedList: (locate('div').withAttr({
+        'data-field-name': 'body'
+      }).find('ol').as('Numbered List Text')),
+    unorderedList: (locate('div').withAttr({
+        'data-field-name': 'body'
+      }).find('ul').as('Bullet Point Text')),
+    linkField: (locate('input[class*="RichEditor__link-input"]').as('Link Field')),
+    linkSave: (locate('button[class*="RichEditor__link-control"]').withText('Save').as('Save Link Button'))
   },
 
   async validateArticlePage() {
@@ -282,43 +295,112 @@ module.exports = {
     await I.waitForVisible(this.locators.titleField)
     await I.fillField(this.locators.titleField, 'Rich Text')
 
-    // console.log('I :', I)
-    await I.typeAndSelect(this.locators.bodyField, 'Bold') // this is in new helper editor_helper.js
+    // Bold
+    await I.typeAndSelect(this.locators.bodyField, 'Bold')
     await I.click(this.locators.boldButton)
-    await I.appendField(this.locators.bodyField, '')
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
     await I.click(this.locators.boldButton)
-    await I.pressKey('Enter')
-    // await I.pressKey('Enter')
-    
-    // pause()
+    // Italic
     await I.typeAndSelect(this.locators.bodyField, 'Italic')
     await I.click(this.locators.italicButton)
-    await I.appendField(this.locators.bodyField, '')
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
     await I.click(this.locators.italicButton)
+    // Strike-through
+    await I.typeAndSelect(this.locators.bodyField, 'Strike-through')
+    await I.click(this.locators.strikeThruButton)
+    await I.appendField(this.locators.bodyField, '')
+    // await I.wait(1)
+    await I.click(this.locators.strikeThruButton)
     await I.pressKey('Enter')
-    await I.pressKey('Enter')
-    
+    // H1
     await I.typeAndSelect(this.locators.bodyField, 'Header 1')
     await I.click(this.locators.h1Button)
     await I.appendField(this.locators.bodyField, '')
-    await I.click(this.locators.h1Button)
+    // await I.wait(1)
     await I.pressKey('Enter')
-    // await I.pressKey('Enter')
-
+    await I.pressKey('Enter')
+    // H2
+    await I.appendField(this.locators.bodyField, '')
     await I.typeAndSelect(this.locators.bodyField, 'Header 2')
     await I.click(this.locators.h2Button)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    // Blockquote
     await I.appendField(this.locators.bodyField, '')
-    await I.click(this.locators.h2Button)
+    await I.typeAndSelect(this.locators.bodyField, 'Blockquote')
+    await I.click(this.locators.quoteButton)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
     await I.pressKey('Enter')
     await I.pressKey('Enter')
-    pause()
+    // Link
+    await I.appendField(this.locators.bodyField, '')
+    await I.typeAndSelect(this.locators.bodyField, 'Link')
+    await I.click(this.locators.linkButton)
+    await I.fillField(this.locators.linkField, 'www.link.com')
+    await I.click(this.locators.linkSave)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    // Ordered List
+    await I.click(this.locators.orderedListButton)
+    await I.fillField(this.locators.bodyField, 'Point 1')
+    await I.pressKey('Enter')
+    await I.fillField(this.locators.bodyField, 'Point 2')
+    await I.pressKey('Enter')
+    await I.click(this.locators.orderedListButton)
+    // await I.wait(1)
+    // Unordered List
+    await I.click(this.locators.unOrderedListButton)
+    await I.fillField(this.locators.bodyField, 'Bullet 1')
+    await I.pressKey('Enter')
+    await I.fillField(this.locators.bodyField, 'Bullet 2')
+    await I.pressKey('Enter')
+    await I.click(this.locators.unOrderedListButton)
+    // await I.wait(1)
 
     await I.click(this.locators.saveArticle)
+    await I.waitForText('The document has been created', 2)
 
-    let attr = await I.grabAttributeFrom(this.locators.boldText, 'style')
-    console.log(attr)
-    let attr1 = await I.grabAttributeFrom(this.locators.italicText, 'style')
-    console.log(attr1)
+    let bold = await I.grabHTMLFrom(this.locators.boldText)
+    // console.log(bold)
+    let italic = await I.grabHTMLFrom(this.locators.italicText)
+    // console.log(italic)
+    let strike = await I.grabHTMLFrom(this.locators.strikeText)
+    // console.log(strike)
+    let quote = await I.grabHTMLFrom(this.locators.quoteText)
+    // console.log(quote)
+    let link = await I.grabHTMLFrom(this.locators.linkText)
+    // console.log(link)
+    let olist = await I.grabHTMLFrom(this.locators.orderedList)
+    // console.log(olist)
+    let ulist = await I.grabHTMLFrom(this.locators.unorderedList)
+    // console.log(ulist)
+    // let text = await I.grabHTMLFrom(this.locators.textArea)
+    // console.log(text)
+    await I.seeStringContains(bold, 'Bold')
+    await I.seeStringContains(italic, 'Italic')
+    await I.seeStringContains(strike, 'Strike-through')
+    await I.seeStringContains(quote, 'Blockquote')
+    await I.seeStringContains(link, 'Link')
+    await I.seeStringContains(olist, '<li>Point 1</li><li>Point 2</li>')
+    await I.seeStringContains(ulist, '<li>Bullet 1</li><li>Bullet 2</li>')
+    // markdown view
+    await I.click(this.locators.textButton)
+    I.wait(2)
+    await I.seeInField(this.locators.markdownText, '**Bold** _Italic_ ~~Strike-through~~')
+    await I.seeInField(this.locators.markdownText, '# Header 1')
+    await I.seeInField(this.locators.markdownText, '## Header 2')
+    await I.seeInField(this.locators.markdownText, '> Blockquote')
+    await I.seeInField(this.locators.markdownText, '[Link](www.link.com)')
+    await I.seeInField(this.locators.markdownText, '1. Point 1')
+    await I.seeInField(this.locators.markdownText, '1. Point 2')
+    await I.seeInField(this.locators.markdownText, '* Bullet 1')
+    await I.seeInField(this.locators.markdownText, '* Bullet 2')
   }
 
 }

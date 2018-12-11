@@ -38,9 +38,7 @@ module.exports = {
     excerptField: (locate('div').withAttr({
       'data-field-name': 'excerpt'
     }).find('textarea').as('Excerpt Field')),
-    bodyField: (locate('div').withAttr({
-    'contenteditable': 'true'
-    }).as('Body Field')),
+    bodyField: (locate('div[class^="RichEditor__editor"]').as('Body Field')),
     metaTab: (locate('a').withText('Meta').as('Meta Tab')),
     metaTitle: (locate('div').withAttr({
       'data-field-name': 'metaTitle'
@@ -77,7 +75,35 @@ module.exports = {
     networkService: (locate('label').withText('Network service').as('Network Service')),
     webService: (locate('label').withText('Web service').as('Web Service')),
     authorPage: (locate('a').withText('4').as('Page 4')),
-    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document'))
+    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
+    boldButton: (locate('button[title="Bold"]').as('Bold Button')),
+    italicButton: (locate('button[title="Italic"]').as('Italic Button')),
+    strikeThruButton: (locate('button[title="Strike-through"]').as('Strike-through Button')),
+    linkButton: (locate('button[title="Link"]').as('Link Button')),
+    h1Button: (locate('button[title="Heading 1"]').as('Header 1 Button')),
+    h2Button: (locate('button[title="Heading 2"]').as('Header 2 Button')),
+    quoteButton: (locate('button[title="Quote"]').as('Blockquote Button')),
+    orderedListButton: (locate('button[title="Ordered List"]').as('Numbered List Button')),
+    unOrderedListButton: (locate('button[title="Unordered List"]').as('Bullet Point Button')),
+    codeButton: (locate('button[title="Code"]').as('Code Button')),
+    imageButton: (locate('button[title="Image"]').as('Image Button')),
+    fullScreenButton: (locate('button[title="Fullscreen"]').as('Full Screen Button')),
+    textButton: (locate('button[title="Text"]').as('Text Button')),
+    boldText: (locate('b').withText('Bold').as('Bold Text')),
+    italicText: (locate('i').withText('Italic').as('Italic Text')),
+    strikeText: (locate('strike').withText('Strike-through').as('Strike-through Text')),
+    textArea: (locate('div[class*="RichEditor__editor-wysiwyg"]').as('Rich Editor Text')),
+    markdownText: (locate('textarea[class*="RichEditor__editor-text"]').as('Markdown Text')),
+    quoteText: (locate('blockquote').withText('Blockquote').as('Blockquote Text')),
+    linkText: (locate('a').withAttr({ 'href': 'www.link.com'}).as('Link Text')),
+    orderedList: (locate('div').withAttr({
+        'data-field-name': 'body'
+      }).find('ol').as('Numbered List Text')),
+    unorderedList: (locate('div').withAttr({
+        'data-field-name': 'body'
+      }).find('ul').as('Bullet Point Text')),
+    linkField: (locate('input[class*="RichEditor__link-input"]').as('Link Field')),
+    linkSave: (locate('button[class*="RichEditor__link-control"]').withText('Save').as('Save Link Button'))
   },
 
   async validateArticlePage() {
@@ -104,13 +130,13 @@ module.exports = {
     I.fillField(this.locators.excerptField, 'This is the excerpt')
     I.fillField(this.locators.bodyField, 'This is the body of the new article')
     I.click(this.locators.saveArticle)
-    I.waitForText('The document has been created')
-    I.wait(3)
+    I.waitForText('The document has been created', 2)
+    // I.wait(3)
     I.click(this.locators.selectAuthor)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author')
     I.waitForText('Author')
-    I.wait(1)
+    // I.wait(1)
     I.click(this.locators.nevermindButton)
     I.waitForFunction(() => document.readyState === 'complete')
     I.dontSeeInCurrentUrl('/select/author')
@@ -119,7 +145,7 @@ module.exports = {
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author')
     I.waitForText('Author')
-    I.wait(1)
+    // I.wait(1)
     I.click(this.locators.authorPage)
     I.waitForFunction(() => document.readyState === 'complete')
     I.seeInCurrentUrl('/select/author/4')
@@ -179,7 +205,7 @@ module.exports = {
     I.click(this.locators.saveMenu)
     I.click(this.locators.saveGoBack)
     I.waitForText('The document has been updated')
-    I.wait(4)
+    I.wait(3)
     I.seeInCurrentUrl('/articles')
     I.see('This Is A New Article')
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
@@ -214,8 +240,8 @@ module.exports = {
     I.see('API')
     I.dontSee('CDN')
     I.click(this.locators.saveGoBack)
-    I.waitForText('The document has been updated')
-    I.wait(4)
+    I.waitForText('The document has been updated', 2)
+    I.wait(3)
     I.seeInCurrentUrl('/articles')
     I.see('This Article Is Updated')
     I.click(this.locators.updatedArticle)
@@ -233,8 +259,8 @@ module.exports = {
     I.click(this.locators.applyButton)
     I.waitForText('Are you sure you want to delete the selected document?')
     I.click(this.locators.deleteButton)
-    I.waitForText('The document has been deleted')
-    I.wait(4)
+    I.waitForText('The document has been deleted', 2)
+    I.wait(3)
     I.dontSee('This Article Is Updated')
     let newTotal = await I.grabTextFrom(this.locators.totalArticles)
     // console.log(newTotal)
@@ -248,16 +274,6 @@ module.exports = {
   },
 
   async editSignOut() {
-    // I.click(this.locators.createNewButton)
-    // I.waitForFunction(() => document.readyState === 'complete')
-    // I.seeInCurrentUrl('/articles/new')
-    // I.fillField(this.locators.titleField, 'Sign Out Article')
-    // I.fillField(this.locators.excerptField, 'This is the excerpt')
-    // I.fillField(this.locators.bodyField, 'This is the body of the article')
-    // I.click(this.locators.saveMenu)
-    // I.click(this.locators.saveGoBack)
-    // I.waitForText('The document has been created')
-    // I.wait(3)
     let link = await I.grabAttributeFrom(this.locators.signOutArticle, 'href')
     // console.log(link)
     let start = link.indexOf('/articles/')
@@ -270,6 +286,121 @@ module.exports = {
 
   async deleteDocument(title) {
     await I.deleteArticleByTitle(title)
+  },
+
+  async richTextInput() {
+    await I.amOnPage('/articles/new')
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.seeInCurrentUrl('/articles/new')
+    await I.waitForVisible(this.locators.titleField)
+    await I.fillField(this.locators.titleField, 'Rich Text')
+
+    // Bold
+    await I.typeAndSelect(this.locators.bodyField, 'Bold')
+    await I.click(this.locators.boldButton)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.click(this.locators.boldButton)
+    // Italic
+    await I.typeAndSelect(this.locators.bodyField, 'Italic')
+    await I.click(this.locators.italicButton)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.click(this.locators.italicButton)
+    // Strike-through
+    await I.typeAndSelect(this.locators.bodyField, 'Strike-through')
+    await I.click(this.locators.strikeThruButton)
+    await I.appendField(this.locators.bodyField, '')
+    // await I.wait(1)
+    await I.click(this.locators.strikeThruButton)
+    await I.pressKey('Enter')
+    // H1
+    await I.typeAndSelect(this.locators.bodyField, 'Header 1')
+    await I.click(this.locators.h1Button)
+    await I.appendField(this.locators.bodyField, '')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    // H2
+    await I.appendField(this.locators.bodyField, '')
+    await I.typeAndSelect(this.locators.bodyField, 'Header 2')
+    await I.click(this.locators.h2Button)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    // Blockquote
+    await I.appendField(this.locators.bodyField, '')
+    await I.typeAndSelect(this.locators.bodyField, 'Blockquote')
+    await I.click(this.locators.quoteButton)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    await I.pressKey('Enter')
+    // Link
+    await I.appendField(this.locators.bodyField, '')
+    await I.typeAndSelect(this.locators.bodyField, 'Link')
+    await I.click(this.locators.linkButton)
+    await I.fillField(this.locators.linkField, 'www.link.com')
+    await I.click(this.locators.linkSave)
+    await I.appendField(this.locators.bodyField, '  ')
+    // await I.wait(1)
+    await I.pressKey('Enter')
+    // Ordered List
+    await I.click(this.locators.orderedListButton)
+    await I.fillField(this.locators.bodyField, 'Point 1')
+    await I.pressKey('Enter')
+    await I.fillField(this.locators.bodyField, 'Point 2')
+    await I.pressKey('Enter')
+    await I.click(this.locators.orderedListButton)
+    // await I.wait(1)
+    // Unordered List
+    await I.click(this.locators.unOrderedListButton)
+    await I.fillField(this.locators.bodyField, 'Bullet 1')
+    await I.pressKey('Enter')
+    await I.fillField(this.locators.bodyField, 'Bullet 2')
+    await I.pressKey('Enter')
+    await I.click(this.locators.unOrderedListButton)
+    // await I.wait(1)
+
+    await I.click(this.locators.saveArticle)
+    await I.waitForText('The document has been created', 2)
+
+    let bold = await I.grabHTMLFrom(this.locators.boldText)
+    // console.log(bold)
+    let italic = await I.grabHTMLFrom(this.locators.italicText)
+    // console.log(italic)
+    let strike = await I.grabHTMLFrom(this.locators.strikeText)
+    // console.log(strike)
+    let quote = await I.grabHTMLFrom(this.locators.quoteText)
+    // console.log(quote)
+    let link = await I.grabHTMLFrom(this.locators.linkText)
+    // console.log(link)
+    let olist = await I.grabHTMLFrom(this.locators.orderedList)
+    // console.log(olist)
+    let ulist = await I.grabHTMLFrom(this.locators.unorderedList)
+    // console.log(ulist)
+    // let text = await I.grabHTMLFrom(this.locators.textArea)
+    // console.log(text)
+    await I.seeStringContains(bold, 'Bold')
+    await I.seeStringContains(italic, 'Italic')
+    await I.seeStringContains(strike, 'Strike-through')
+    await I.seeStringContains(quote, 'Blockquote')
+    await I.seeStringContains(link, 'Link')
+    await I.seeStringContains(olist, '<li>Point 1</li><li>Point 2</li>')
+    await I.seeStringContains(ulist, '<li>Bullet 1</li><li>Bullet 2</li>')
+    // markdown view
+    await I.click(this.locators.textButton)
+    I.wait(2)
+    await I.seeInField(this.locators.markdownText, '**Bold** _Italic_ ~~Strike-through~~')
+    await I.seeInField(this.locators.markdownText, '# Header 1')
+    await I.seeInField(this.locators.markdownText, '## Header 2')
+    await I.seeInField(this.locators.markdownText, '> Blockquote')
+    await I.seeInField(this.locators.markdownText, '[Link](www.link.com)')
+    await I.seeInField(this.locators.markdownText, '1. Point 1')
+    await I.seeInField(this.locators.markdownText, '1. Point 2')
+    await I.seeInField(this.locators.markdownText, '* Bullet 1')
+    await I.seeInField(this.locators.markdownText, '* Bullet 2')
   }
 
 }

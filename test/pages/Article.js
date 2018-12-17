@@ -387,7 +387,7 @@ module.exports = {
     await I.seeStringContains(strike, 'Strike-through')
     await I.seeStringContains(quote, 'Blockquote')
     await I.seeStringContains(link, 'Link')
-    await I.seeStringContains(olist, '<li>Point 1</li><li>Point 2</li>')
+    await I.seeStringContains(olist, '<li><span>Point 1</span></li><li><span>Point 2</span></li>')
     await I.seeStringContains(ulist, '<li>Bullet 1</li><li>Bullet 2</li>')
     // markdown view
     await I.click(this.locators.textButton)

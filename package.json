@@ -13,11 +13,11 @@
     "@dadi/api-wrapper": "^3.2.0",
     "anyid": "^1.0.5",
     "chai": "^4.1.2",
-    "codeceptjs": "^1.4.5",
+    "codeceptjs": "^2.0.2",
     "mocha-jenkins-reporter": "^0.4.0",
     "mocha-multi": "^1.0.1",
     "mochawesome": "^3.0.3",
-    "puppeteer": "1.9.0",
+    "puppeteer": "^1.9.0",
     "speakeasy": "^2.0.0"
   },
   "dependencies": {

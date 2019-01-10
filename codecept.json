@@ -22,6 +22,9 @@
     },
     "DataHelper": {
       "require": "./test/helpers/data_helper.js"
+    },
+    "Editor": {
+      "require": "./test/helpers/editor_helper.js"
     }
   },
   "include": {

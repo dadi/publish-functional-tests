@@ -4,6 +4,7 @@ const {
   assert,
   expect
 } = require('chai')
+const moment = require('moment')
 
 let I
 
@@ -17,6 +18,61 @@ module.exports = {
   locators: {
     footer: (locate('.//footer').as('Field Test Page Footer')),
     createNewButton: (locate('a').withText('Create new').as('Create New Button')),
+    boolReq: (locate('div').withAttr({
+      'data-field-name': 'boolRequired'
+    }).find('input').withAttr({
+      'name': 'boolRequired'
+    }).as('A boolean')),
+    boolReadOnly: (locate('div').withAttr({
+      'data-field-name': 'boolReadOnly'
+    }).find('input').withAttr({
+      'name': 'boolReadOnly'
+    }).as('Read-only boolean')),
+    dateReq: (locate('div').withAttr({
+      'data-field-name': 'dateRequired'
+    }).find('input').withAttr({
+      'name': 'dateRequired'
+    }).as('A date')),
+    dateReqError: (locate('div').withAttr({
+      'data-field-name': 'dateRequired'
+    }).find('p').withText('This field must be specified')),
+    dateReadOnly: (locate('div').withAttr({
+      'data-field-name': 'dateReadOnly'
+    }).find('input').withAttr({
+      'name': 'dateReadOnly'
+    }).as('Read-only date')),
+    dateFuture: (locate('div').withAttr({
+      'data-field-name': 'dateFuture'
+    }).find('input').withAttr({
+      'name': 'dateFuture'
+    }).as('A future date')),
+    dateFutureError: (locate('div').withAttr({
+      'data-field-name': 'dateFuture'
+    }).find('p').withText('This field is wrong type')),
+    datePast: (locate('div').withAttr({
+      'data-field-name': 'datePast'
+    }).find('input').withAttr({
+      'name': 'datePast'
+    }).as('A past date')),
+    datePastError: (locate('div').withAttr({
+      'data-field-name': 'datePast'
+    }).find('p').withText('This field is wrong type')),
+    dateAfter: (locate('div').withAttr({
+      'data-field-name': 'dateAfter'
+    }).find('input').withAttr({
+      'name': 'dateAfter'
+    }).as('A date after x')),
+    dateAfterError: (locate('div').withAttr({
+      'data-field-name': 'dateAfter'
+    }).find('p').withText('This field is wrong type')),
+    dateBefore: (locate('div').withAttr({
+      'data-field-name': 'dateBefore'
+    }).find('input').withAttr({
+      'name': 'dateBefore'
+    }).as('A date before x')),
+    dateBeforeError: (locate('div').withAttr({
+      'data-field-name': 'dateBefore'
+    }).find('p').withText('This field is wrong type')),
     readOnly: (locate('div').withAttr({
       'data-field-name': 'stringReadonly'
     }).find('input').withAttr({
@@ -38,39 +94,100 @@ module.exports = {
     copyrightField: (locate('input').withAttr({
       'name': 'copyright'
     }).as('Copyright Field')),
-    saveButton: (locate('button').withText('Save').as('Save Button')),
+    saveMenu: (locate('button[class*="ButtonWithOptions__launcher"]').as('Save Menu')),
+    saveGoBack: (locate('button').withText('Save and go back').as('Save And Go Back Button')),
+    saveContinue: (locate('button').withText('Save and continue').as('Save And Continue Button')),
     totalImages: (locate('.//strong[2]').as('Total Number of Images')),
     checkImage: (locate('input[class *= "MediaGridCard__select___"]').first().as('Select Image')),
     applyButton: (locate('button').withText('Apply').as('Apply Button')),
     selectDelete: (locate('.//select').as('Select Delete')),
     deleteButton: (locate('button').withText('Yes, delete it.').as('Delete Button')),
-    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document'))
+    nevermindButton: (locate('a').withText('Nevermind, back to document').as('Back to document')),
+    boolYes: (locate('span[class*="FieldBoolean__enabled"]').withText('Yes').as('Yes')),
+    boolNo: (locate('span[class*="FieldBoolean__disabled"]').withText('No').as('No'))
   },
 
-  async validateFields() {
-    await I.amOnPage('/field-test')
+  async validateBoolean() {
+    await I.amOnPage('/field-testing/field-test-boolean')
     I.wait(3)
     await I.waitForFunction(() => document.readyState === 'complete')
-    // await I.waitForText('Media Library')
     await I.waitForElement(this.locators.footer)
     await I.seeElement(this.locators.createNewButton)
-    // pause()
     await I.click(this.locators.createNewButton)
     await I.waitForFunction(() => document.readyState === 'complete')
-    await I.seeInCurrentUrl('/field-test/new')
-    await I.seeElement(this.locators.readOnly)
-    // I.wait(3)
-    // let images = await I.grabNumberOfVisibleElements(this.locators.images)
-    // // console.log(images)
-    // await I.seeNumberOfVisibleElements(this.locators.images, images)
-    // await I.seeTotalGreaterThanZero(images)
-    // await I.attachFile(this.locators.fileUpload, 'test/images/Stone.jpeg')
-    // await I.waitForFunction(() => document.readyState === 'complete')
-    // I.wait(2)
-    // let newImages = await I.grabNumberOfVisibleElements(this.locators.images)
-    // // console.log(newImages)
-    // I.seeTotalHasIncreased(newImages, images)
-    // await I.see('Stone.jpeg')
+    await I.seeInCurrentUrl('/field-test-boolean/new')
+    await I.seeElement(this.locators.boolReq)
+    await I.seeElement(this.locators.boolReadOnly)
+    await I.click(this.locators.boolReq)
+    await I.click(this.locators.saveMenu)
+    await I.click(this.locators.saveGoBack)
+    await I.waitForText('The document has been created', 3)
+    await I.dontSeeInCurrentUrl('/new')
+    await I.waitForVisible(this.locators.boolYes)
+    await I.seeElement(this.locators.boolNo)
+  },
+
+  async deleteAllBooleans() {
+    await I.deleteFieldTestBooleans()
+  },
+
+  async validateDate() {
+    await I.amOnPage('/field-testing/field-test-date')
+    I.wait(3)
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.waitForElement(this.locators.footer)
+    await I.seeElement(this.locators.createNewButton)
+    await I.click(this.locators.createNewButton)
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.seeInCurrentUrl('/field-test-date/new')
+    await I.seeElement(this.locators.dateReq)
+    await I.seeElement(this.locators.dateReadOnly)
+    await I.seeElement(this.locators.dateFuture)
+    await I.seeElement(this.locators.datePast)
+    await I.seeElement(this.locators.dateAfter)
+    await I.seeElement(this.locators.dateBefore)
+    await I.click(this.locators.saveContinue)
+    await I.waitForText('Document failed to save', 3)
+    await I.waitForVisible(this.locators.dateReqError)
+    var formattedDate = moment(new Date()).format('YYYY/MM/DD 09:00')
+    // console.log(formattedDate)
+    await I.fillField(this.locators.dateReq, formattedDate)
+    var futureDateErr = moment(new Date(), 'YYYY/MM/DD').subtract(2, 'day')
+    futureDateErr = futureDateErr.format('YYYY/MM/DD 09:00')
+    // console.log(futureDateErr)
+    await I.fillField(this.locators.dateFuture, futureDateErr)
+    var pastDateErr = moment(new Date(), 'YYYY/MM/DD').add(2, 'day')
+    pastDateErr = pastDateErr.format('YYYY/MM/DD 09:00')
+    // console.log(pastDateErr)
+    await I.fillField(this.locators.datePast, pastDateErr)
+    await I.fillField(this.locators.dateAfter, '2018/01/01 09:00')
+    await I.fillField(this.locators.dateBefore, '2020/01/01 09:00')
+    await I.click(this.locators.saveContinue)
+    await I.waitForText('Document failed to save', 3)
+    await I.waitForVisible(this.locators.dateFutureError)
+    await I.waitForVisible(this.locators.datePastError)
+    await I.waitForVisible(this.locators.dateAfterError)
+    await I.fillField(this.locators.dateFuture, '')
+    var futureDate = moment(new Date(), 'YYYY/MM/DD').add(2, 'day')
+    futureDate = futureDate.format('YYYY/MM/DD 09:00')
+    // console.log(futureDate)
+    await I.fillField(this.locators.dateFuture, futureDate)
+    await I.fillField(this.locators.datePast, '')
+    var pastDate = moment(new Date(), 'YYYY/MM/DD').subtract(2, 'day')
+    pastDate = pastDate.format('YYYY/MM/DD 09:00')
+    // console.log(pastDate)
+    await I.fillField(this.locators.datePast, pastDate)
+    await I.fillField(this.locators.dateAfter, '')
+    await I.fillField(this.locators.dateAfter, '2018/01/02 09:00')
+    await I.click(this.locators.saveMenu)
+    await I.click(this.locators.saveGoBack)
+    await I.waitForText('The document has been created', 3)
+    await I.dontSeeInCurrentUrl('/new')
+    await I.waitForText(formattedDate)
+  },
+
+  async deleteAllDates() {
+    await I.deleteFieldTestDates()
   }
 
 }

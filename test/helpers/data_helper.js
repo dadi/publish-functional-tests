@@ -30,7 +30,7 @@ function getApi () {
 }
 
 class Data extends Helper {
-  async createClient (id, secret) {
+  async createClient(id, secret, selectedResources) {
     let client = {
       clientId: id,
       secret: secret
@@ -44,7 +44,7 @@ class Data extends Helper {
       .then(doc => {
         return this.getToken()
           .then(result => {
-            this.addResources(JSON.parse(result).accessToken, client).then(result => {
+            this.addResources(JSON.parse(result).accessToken, client, selectedResources).then(result => {
               // console.log('result :', result)
             })
           })
@@ -73,6 +73,34 @@ class Data extends Helper {
     await api
       .in('articles')
       .whereFieldIsEqualTo('title', title)
+      .delete()
+      .then(() => {
+        // console.log('Deleted ' + title)
+      }).catch(err => {
+        console.log('! Error:', err)
+      })
+  }
+
+  async deleteFieldTestBooleans() {
+    let api = getApi()
+
+    await api
+      .in('field-test-boolean')
+      .whereFieldExists('boolRequired')
+      .delete()
+      .then(() => {
+        // console.log('Deleted ' + title)
+      }).catch(err => {
+        console.log('! Error:', err)
+      })
+  }
+
+  async deleteFieldTestDates() {
+    let api = getApi()
+
+    await api
+      .in('field-test-date')
+      .whereFieldExists('dateRequired')
       .delete()
       .then(() => {
         // console.log('Deleted ' + title)
@@ -117,7 +145,7 @@ class Data extends Helper {
     return this.makeRequest({ options, data: postData })
   }
 
-  addResources (accessToken, client) {
+  addResources(accessToken, client, selectedResources) {
     let options = {
       hostname: config.api.host,
       port: config.api.port,
@@ -129,15 +157,21 @@ class Data extends Helper {
       }
     }
 
-    let resourceList = [
+    let resourceList = selectedResources || [
       'collection:cloud_articles',
       'media:mediaStore',
       'collection:cloud_team',
-      'collection:cloud_field-test',
       'collection:cloud_categories',
       'collection:cloud_sub-categories',
       'collection:cloud_web-services',
-      'collection:cloud_network-services'
+      'collection:cloud_network-services',
+      'collection:cloud_field-test-boolean',
+      'collection:cloud_field-test-date',
+      'collection:cloud_field-test-media',
+      'collection:cloud_field-test-number',
+      'collection:cloud_field-test-other',
+      'collection:cloud_field-test-reference',
+      'collection:cloud_field-test-string'
     ]
     let resources = []
 

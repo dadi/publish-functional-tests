@@ -2,7 +2,7 @@ Feature('Media Page - @smoke')
 
 BeforeSuite(async (articlePage, loginPage) => {
   await loginPage.deleteUser('media')
-  await loginPage.addUser('media', '123456')
+  await loginPage.addUser('media', '123456', ['media:mediaStore'])
   await loginPage.createSession('media', '123456', '/media')
 })
 

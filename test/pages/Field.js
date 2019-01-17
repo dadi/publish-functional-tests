@@ -64,7 +64,7 @@ module.exports = {
     }).as('A date after x')),
     dateAfterError: (locate('div').withAttr({
       'data-field-name': 'dateAfter'
-    }).find('p').withText('This field must be after Mon Jan 01 2018 00:00:00').as('A Date After Error Message')),
+    }).find('p').withText('This field must be after Mon Jan 01 2018').as('A Date After Error Message')),
     dateBefore: (locate('div').withAttr({
       'data-field-name': 'dateBefore'
     }).find('input').withAttr({
@@ -72,7 +72,7 @@ module.exports = {
     }).as('A date before x')),
     dateBeforeError: (locate('div').withAttr({
       'data-field-name': 'dateBefore'
-    }).find('p').withText('This field must be before Mon Jan 01 2018 00:00:00').as('A Date Before Error Message')),
+    }).find('p').withText('This field must be before Mon Jan 01 2018').as('A Date Before Error Message')),
     readOnly: (locate('div').withAttr({
       'data-field-name': 'stringReadonly'
     }).find('input').withAttr({
@@ -82,7 +82,7 @@ module.exports = {
     dropArea: (locate('[class *= "DropArea__droparea"]').as('Drop File Area')),
     fileUpload: (locate('input[class *= "FileUpload__file"]').as('File Upload')),
     firstImage: (locate('a[class *= "MediaGridCard__image-holder___"]').first().as('First Image')),
-    stoneImage: (locate('img[src*="Stone.jpeg"]')),
+    stoneImage: (locate('img[src*="Stone.jpeg"]').as('Stone Image')),
     editImage: (locate('img[class *= "MediaEditor__image-preview___"]').as('Image Preview')),
     openNewWindow: (locate('a').withText('Open in new window').as('Open In New Window Link')),
     captionField: (locate('input').withAttr({
@@ -147,41 +147,44 @@ module.exports = {
     await I.seeElement(this.locators.dateAfter)
     await I.seeElement(this.locators.dateBefore)
     await I.click(this.locators.saveContinue)
-    await I.waitForText('Document failed to save', 3)
     await I.waitForVisible(this.locators.dateReqError)
     var formattedDate = moment(new Date()).format('YYYY/MM/DD 09:00')
     // console.log(formattedDate)
+    await I.click(this.locators.datePast)
     await I.fillField(this.locators.dateReq, formattedDate)
     var futureDateErr = moment(new Date(), 'YYYY/MM/DD').subtract(2, 'day')
     futureDateErr = futureDateErr.format('YYYY/MM/DD 09:00')
     // console.log(futureDateErr)
     await I.fillField(this.locators.dateFuture, futureDateErr)
+    await I.click(this.locators.datePast)
+    await I.waitForVisible(this.locators.dateFutureError)
     var pastDateErr = moment(new Date(), 'YYYY/MM/DD').add(2, 'day')
     pastDateErr = pastDateErr.format('YYYY/MM/DD 09:00')
     // console.log(pastDateErr)
     await I.fillField(this.locators.datePast, pastDateErr)
+    await I.click(this.locators.dateAfter)
+    await I.waitForVisible(this.locators.datePastError)
     await I.fillField(this.locators.dateAfter, '2018/01/01 09:00')
+    await I.click(this.locators.dateBefore)
+    await I.waitForVisible(this.locators.dateAfterError)
     var dateBefore = moment(new Date()).format('YYYY/MM/DD 09:00')
     await I.fillField(this.locators.dateBefore, dateBefore)
-    await I.click(this.locators.saveContinue)
-    await I.waitForText('Document failed to save', 3)
-    await I.waitForVisible(this.locators.dateFutureError)
-    await I.waitForVisible(this.locators.datePastError)
-    await I.waitForVisible(this.locators.dateAfterError)
+    await I.click(this.locators.dateReq)
     await I.waitForVisible(this.locators.dateBeforeError)
-    await I.fillField(this.locators.dateFuture, '')
+    await I.click(this.locators.saveContinue)
+    await I.clearField(this.locators.dateFuture)
     var futureDate = moment(new Date(), 'YYYY/MM/DD').add(2, 'day')
     futureDate = futureDate.format('YYYY/MM/DD 09:00')
     // console.log(futureDate)
     await I.fillField(this.locators.dateFuture, futureDate)
-    await I.fillField(this.locators.datePast, '')
+    await I.clearField(this.locators.datePast)
     var pastDate = moment(new Date(), 'YYYY/MM/DD').subtract(2, 'day')
     pastDate = pastDate.format('YYYY/MM/DD 09:00')
     // console.log(pastDate)
     await I.fillField(this.locators.datePast, pastDate)
-    await I.fillField(this.locators.dateAfter, '')
+    await I.clearField(this.locators.dateAfter)
     await I.fillField(this.locators.dateAfter, '2018/01/02 09:00')
-    await I.fillField(this.locators.dateBefore, '')
+    await I.clearField(this.locators.dateBefore)
     await I.fillField(this.locators.dateBefore, '2017/12/31 09:00')
     await I.click(this.locators.saveMenu)
     await I.click(this.locators.saveGoBack)

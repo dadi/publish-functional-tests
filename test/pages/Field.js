@@ -35,7 +35,7 @@ module.exports = {
     }).as('A date')),
     dateReqError: (locate('div').withAttr({
       'data-field-name': 'dateRequired'
-    }).find('p').withText('This field must be specified')),
+    }).find('p').withText('This field must be specified').as('Required Field Error Message')),
     dateReadOnly: (locate('div').withAttr({
       'data-field-name': 'dateReadOnly'
     }).find('input').withAttr({
@@ -48,7 +48,7 @@ module.exports = {
     }).as('A future date')),
     dateFutureError: (locate('div').withAttr({
       'data-field-name': 'dateFuture'
-    }).find('p').withText('This field is wrong type')),
+    }).find('p').withText('This field must be after').as('Future Date Error Message')),
     datePast: (locate('div').withAttr({
       'data-field-name': 'datePast'
     }).find('input').withAttr({
@@ -56,7 +56,7 @@ module.exports = {
     }).as('A past date')),
     datePastError: (locate('div').withAttr({
       'data-field-name': 'datePast'
-    }).find('p').withText('This field is wrong type')),
+    }).find('p').withText('This field must be before').as('Past Date Error Message')),
     dateAfter: (locate('div').withAttr({
       'data-field-name': 'dateAfter'
     }).find('input').withAttr({
@@ -64,7 +64,7 @@ module.exports = {
     }).as('A date after x')),
     dateAfterError: (locate('div').withAttr({
       'data-field-name': 'dateAfter'
-    }).find('p').withText('This field is wrong type')),
+    }).find('p').withText('This field must be after Mon Jan 01 2018 00:00:00').as('A Date After Error Message')),
     dateBefore: (locate('div').withAttr({
       'data-field-name': 'dateBefore'
     }).find('input').withAttr({
@@ -72,7 +72,7 @@ module.exports = {
     }).as('A date before x')),
     dateBeforeError: (locate('div').withAttr({
       'data-field-name': 'dateBefore'
-    }).find('p').withText('This field is wrong type')),
+    }).find('p').withText('This field must be before Mon Jan 01 2018 00:00:00').as('A Date Before Error Message')),
     readOnly: (locate('div').withAttr({
       'data-field-name': 'stringReadonly'
     }).find('input').withAttr({
@@ -161,12 +161,14 @@ module.exports = {
     // console.log(pastDateErr)
     await I.fillField(this.locators.datePast, pastDateErr)
     await I.fillField(this.locators.dateAfter, '2018/01/01 09:00')
-    await I.fillField(this.locators.dateBefore, '2020/01/01 09:00')
+    var dateBefore = moment(new Date()).format('YYYY/MM/DD 09:00')
+    await I.fillField(this.locators.dateBefore, dateBefore)
     await I.click(this.locators.saveContinue)
     await I.waitForText('Document failed to save', 3)
     await I.waitForVisible(this.locators.dateFutureError)
     await I.waitForVisible(this.locators.datePastError)
     await I.waitForVisible(this.locators.dateAfterError)
+    await I.waitForVisible(this.locators.dateBeforeError)
     await I.fillField(this.locators.dateFuture, '')
     var futureDate = moment(new Date(), 'YYYY/MM/DD').add(2, 'day')
     futureDate = futureDate.format('YYYY/MM/DD 09:00')
@@ -179,6 +181,8 @@ module.exports = {
     await I.fillField(this.locators.datePast, pastDate)
     await I.fillField(this.locators.dateAfter, '')
     await I.fillField(this.locators.dateAfter, '2018/01/02 09:00')
+    await I.fillField(this.locators.dateBefore, '')
+    await I.fillField(this.locators.dateBefore, '2017/12/31 09:00')
     await I.click(this.locators.saveMenu)
     await I.click(this.locators.saveGoBack)
     await I.waitForText('The document has been created', 3)

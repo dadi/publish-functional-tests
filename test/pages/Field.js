@@ -73,11 +73,72 @@ module.exports = {
     dateBeforeError: (locate('div').withAttr({
       'data-field-name': 'dateBefore'
     }).find('p').withText('This field must be before Mon Jan 01 2018').as('A Date Before Error Message')),
-    readOnly: (locate('div').withAttr({
-      'data-field-name': 'stringReadonly'
+    numberReq: (locate('div').withAttr({
+      'data-field-name': 'numberRequired'
     }).find('input').withAttr({
-    'readonly': 'true'
-    }).as('Read Only Field')),
+      'name': 'numberRequired'
+    }).as('A number')),
+    numberReqError: (locate('div').withAttr({
+      'data-field-name': 'numberRequired'
+    }).find('p').withText('This field must be specified').as('Required Field Error Message')),
+    numberNoLabel: (locate('div').withAttr({
+      'data-field-name': 'numberNoLabel'
+    }).find('input').withAttr({
+      'name': 'numberNoLabel'
+    }).as('numberNoLabel')),
+    numberGT: (locate('div').withAttr({
+      'data-field-name': 'numberGreaterThan'
+    }).find('input').withAttr({
+      'name': 'numberGreaterThan'
+    }).as('Number greaterThan')),
+    numberGTError: (locate('div').withAttr({
+      'data-field-name': 'numberGreaterThan'
+    }).find('p').withText('This field must be greater than 10').as('Number Greater Than 10 Error Message')),
+    numberLT: (locate('div').withAttr({
+      'data-field-name': 'numberLessThan'
+    }).find('input').withAttr({
+      'name': 'numberLessThan'
+    }).as('Number lessThan')),
+    numberLTError: (locate('div').withAttr({
+      'data-field-name': 'numberLessThan'
+    }).find('p').withText('This field must be less than 10').as('Number Less Than 10 Error Message')),
+    numberReadOnly: (locate('div').withAttr({
+      'data-field-name': 'numberReadOnly'
+    }).find('input').withAttr({
+      'readonly': 'true'
+    }).as('A read-only number')),
+    numberOdd: (locate('div').withAttr({
+      'data-field-name': 'numberOdd'
+    }).find('input').withAttr({
+      'name': 'numberOdd'
+    }).as('Number odd')),
+    numberOddError: (locate('div').withAttr({
+      'data-field-name': 'numberOdd'
+    }).find('p').withText('This field must be odd').as('Number Odd Error Message')),
+    numberEven: (locate('div').withAttr({
+      'data-field-name': 'numberEven'
+    }).find('input').withAttr({
+      'name': 'numberEven'
+    }).as('Number even')),
+    numberEvenError: (locate('div').withAttr({
+      'data-field-name': 'numberEven'
+    }).find('p').withText('This field must be even').as('Number Even Error Message')),
+    numberInt: (locate('div').withAttr({
+      'data-field-name': 'numberInteger'
+    }).find('input').withAttr({
+      'name': 'numberInteger'
+    }).as('Number integer')),
+    numberIntError: (locate('div').withAttr({
+      'data-field-name': 'numberInteger'
+    }).find('p').withText('This field must be integer').as('Number Integer Error Message')),
+    numberFloat: (locate('div').withAttr({
+      'data-field-name': 'numberNotInteger'
+    }).find('input').withAttr({
+      'name': 'numberNotInteger'
+    }).as('Number float')),
+    numberFloatError: (locate('div').withAttr({
+      'data-field-name': 'numberNotInteger'
+    }).find('p').withText('This field must not be integer').as('Number Float Error Message')),
     images: (locate('[class *= "MediaGridCard__wrapper___"]').as('Number of Images')),
     dropArea: (locate('[class *= "DropArea__droparea"]').as('Drop File Area')),
     fileUpload: (locate('input[class *= "FileUpload__file"]').as('File Upload')),
@@ -195,6 +256,65 @@ module.exports = {
 
   async deleteAllDates() {
     await I.deleteFieldTestDates()
-  }
+  },
+
+  async validateNumber() {
+    await I.amOnPage('/field-testing/field-test-number')
+    I.wait(3)
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.waitForElement(this.locators.footer)
+    await I.seeElement(this.locators.createNewButton)
+    await I.click(this.locators.createNewButton)
+    await I.waitForFunction(() => document.readyState === 'complete')
+    await I.seeInCurrentUrl('/field-test-number/new')
+    await I.seeElement(this.locators.numberReq)
+    await I.seeElement(this.locators.numberNoLabel)
+    await I.seeElement(this.locators.numberGT)
+    await I.seeElement(this.locators.numberLT)
+    await I.seeElement(this.locators.numberReadOnly)
+    await I.seeElement(this.locators.numberOdd)
+    await I.seeElement(this.locators.numberEven)
+    await I.seeElement(this.locators.numberInt)
+    await I.seeElement(this.locators.numberFloat)
+    await I.click(this.locators.saveContinue)
+    await I.waitForVisible(this.locators.numberReqError)
+    await I.fillField(this.locators.numberGT, '10')
+    await I.waitForVisible(this.locators.numberGTError)
+    await I.fillField(this.locators.numberLT, '10')
+    await I.waitForVisible(this.locators.numberLTError)
+    await I.fillField(this.locators.numberOdd, '2')
+    await I.waitForVisible(this.locators.numberOddError)
+    await I.fillField(this.locators.numberEven, '1')
+    await I.waitForVisible(this.locators.numberEvenError)
+    await I.fillField(this.locators.numberInt, '1.1')
+    await I.waitForVisible(this.locators.numberIntError)
+    await I.fillField(this.locators.numberFloat, '1')
+    await I.waitForVisible(this.locators.numberFloatError)
+    await I.fillField(this.locators.numberReq, '1')
+    await I.appendField(this.locators.numberGT, '')
+    await I.pressKey('ArrowUp')
+    await I.pressKey('ArrowUp')
+    await I.seeInField(this.locators.numberGT, '12')
+    await I.appendField(this.locators.numberLT, '')
+    await I.pressKey('ArrowDown')
+    await I.seeInField(this.locators.numberLT, '9')
+    await I.clearField(this.locators.numberOdd)
+    await I.fillField(this.locators.numberOdd, '1')
+    await I.clearField(this.locators.numberEven)
+    await I.fillField(this.locators.numberEven, '2')
+    await I.clearField(this.locators.numberInt)
+    await I.fillField(this.locators.numberInt, '1')
+    await I.clearField(this.locators.numberFloat)
+    await I.fillField(this.locators.numberFloat, '1.123')
+    await I.click(this.locators.saveMenu)
+    await I.click(this.locators.saveGoBack)
+    await I.waitForText('The document has been created', 3)
+    await I.dontSeeInCurrentUrl('/new')
+    await I.waitForText('1.123')
+  },
+
+  async deleteAllNumbers() {
+    await I.deleteFieldTestNumbers()
+  },
 
 }

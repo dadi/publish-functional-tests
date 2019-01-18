@@ -109,6 +109,20 @@ class Data extends Helper {
       })
   }
 
+  async deleteFieldTestNumbers() {
+    let api = getApi()
+
+    await api
+      .in('field-test-number')
+      .whereFieldExists('numberRequired')
+      .delete()
+      .then(() => {
+        // console.log('Deleted ' + title)
+      }).catch(err => {
+        console.log('! Error:', err)
+      })
+  }
+
   getToken () {
     let postData = JSON.stringify(config.api.credentials)
     // console.log("THIS" + postData)
